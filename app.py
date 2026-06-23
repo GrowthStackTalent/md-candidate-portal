@@ -481,7 +481,7 @@ def submit():
             edu_entries.append(" | ".join(p for p in parts if p))
     education_str = "; ".join(edu_entries) if edu_entries else "—"
 
-    currency = f.get("currency", "USD")
+    currency = f.get("currency", "GBP")
     symbol = CURRENCY_SYMBOLS.get(currency, "")
 
     def fmt_salary(val):
@@ -567,7 +567,7 @@ def job_apply(job_id):
     job = next((j for j in all_jobs if j["Job ID"] == job_id), None)
     if not job or job.get("Status") != "Open":
         return redirect(url_for("public_jobs"))
-    currency_symbol = CURRENCY_SYMBOLS.get(job.get("Currency", "USD") or "USD", "$")
+    currency_symbol = CURRENCY_SYMBOLS.get(job.get("Currency", "GBP") or "GBP", "£")
     return render_template("job_apply.html", job=job, currency_symbol=currency_symbol)
 
 
@@ -772,7 +772,7 @@ def admin_add_job():
         "Job Title":        f.get("job_title", "").strip(),
         "Location":         _build_job_location(f.get("city","").strip(), f.get("country","").strip(), f.get("is_remote")=="yes"),
         "Salary Band":      f.get("salary_band", "").strip(),
-        "Currency":         f.get("currency", "USD").strip(),
+        "Currency":         f.get("currency", "GBP").strip(),
         "Contact Person":   f.get("contact_person", "").strip(),
         "Assigned To":      f.get("assigned_to", "").strip(),
         "Status":           "Open",
@@ -816,7 +816,7 @@ def admin_job_detail(job_id):
     client = next((c for c in clients if c["Client Name"] == job.get("Company Name", "")), None)
 
     # Currency symbol
-    currency_code = job.get("Currency", "USD") or "USD"
+    currency_code = job.get("Currency", "GBP") or "GBP"
     currency_symbol = CURRENCY_SYMBOLS.get(currency_code, currency_code + " ")
 
     # Calculate fee range from salary band
@@ -856,7 +856,7 @@ def admin_update_job(job_id):
     for j in jobs:
         if j["Job ID"] == job_id:
             j["Status"]               = request.form.get("status", j.get("Status", "Open"))
-            j["Currency"]             = request.form.get("currency", j.get("Currency", "USD")).strip()
+            j["Currency"]             = request.form.get("currency", j.get("Currency", "GBP")).strip()
             j["Expected Start Date"]  = request.form.get("expected_start_date", "").strip()
             j["Expected Invoice Date"]= request.form.get("expected_invoice_date", "").strip()
     with open(JOBS_PATH, "w", newline="", encoding="utf-8") as fh:
