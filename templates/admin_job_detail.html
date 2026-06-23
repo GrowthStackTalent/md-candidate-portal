@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ job['Job Title'] }} — Mason Dynamics LTD</title>
+  <link rel="icon" type="image/png" href="/static/favicon.png" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <style>
+    body { background: #F0F4F9; }
+
+    .admin-header {
+      background: #fff; border-bottom: 3px solid #2255CC;
+      padding: 0 32px; margin-bottom: 28px;
+    }
+    .admin-header-inner {
+      display: flex; align-items: center;
+      justify-content: space-between; padding: 14px 0;
+    }
+    .admin-header img { height: 44px; }
+    .btn-nav {
+      background: none; border: 1.5px solid #D8E2EC;
+      border-radius: 7px; padding: 7px 14px;
+      font-size: 12px; font-weight: 600; color: #5A6A7A;
+      cursor: pointer; text-decoration: none;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-nav:hover { border-color: #2D2D2D; color: #2D2D2D; }
+
+    .admin-body { max-width: 1200px; margin: 0 auto; padding: 0 24px 60px; }
+
+    /* Two-column layout */
+    .detail-layout { display: grid; grid-template-columns: 340px 1fr; gap: 24px; align-items: start; }
+
+    /* Cards */
+    .card {
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      overflow: hidden; margin-bottom: 20px;
+    }
+    .card-header {
+      padding: 16px 22px; border-bottom: 1px solid #EEF2F6;
+      font-size: 14px; font-weight: 700; color: #2D2D2D;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-body { padding: 20px 22px; }
+
+    /* Job banner */
+    .job-banner {
+      background: #2D2D2D; color: #fff;
+      border-radius: 12px; padding: 24px 28px;
+      margin-bottom: 24px;
+    }
+    .job-banner-title { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+    .job-banner-client { font-size: 14px; opacity: 0.8; margin-bottom: 12px; }
+    .job-banner-tags { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .jb-tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(255,255,255,0.15); border-radius: 20px;
+      padding: 4px 12px; font-size: 12px; font-weight: 600;
+    }
+
+    /* Info rows */
+    .info-row {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 11px 0; border-bottom: 1px solid #F0F4F8;
+      gap: 12px;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { font-size: 11px; font-weight: 700; color: #8A9AAA; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+    .info-value { font-size: 13px; color: #1A2332; font-weight: 600; text-align: right; }
+
+    /* Fee highlight */
+    .fee-box {
+      background: linear-gradient(135deg, #E8F5E9, #F1F8F2);
+      border: 1.5px solid #A5D6A7; border-radius: 10px;
+      padding: 16px 20px; text-align: center; margin: 16px 0 0;
+    }
+    .fee-box-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #388E3C; margin-bottom: 6px; }
+    .fee-box-value { font-size: 24px; font-weight: 800; color: #2D2D2D; }
+    .fee-box-sub   { font-size: 11px; color: #66BB6A; margin-top: 4px; }
+
+    /* Status select */
+    .status-select {
+      font-size: 12px; font-weight: 600; padding: 5px 10px;
+      border-radius: 20px; border: 1.5px solid #D8E2EC; cursor: pointer;
+    }
+    .status-open   { background:#E6F4EA; color:#2E7D32; border-color:#A5D6A7; }
+    .status-filled { background:#E3F2FD; color:#1565C0; border-color:#90CAF9; }
+    .status-closed { background:#FFF3E0; color:#E65100; border-color:#FFCC80; }
+    .status-hold   { background:#F3E5F5; color:#6A1B9A; border-color:#CE93D8; }
+
+    /* Date fields */
+    .date-form { display: flex; flex-direction: column; gap: 12px; }
+    .date-row { display: flex; flex-direction: column; gap: 5px; }
+    .date-label { font-size: 11px; font-weight: 700; color: #4A5A6A; text-transform: uppercase; letter-spacing: 0.5px; }
+    .date-input {
+      padding: 8px 12px; border: 1.5px solid #D8E2EC; border-radius: 7px;
+      font-size: 13px; color: #1A2332; width: 100%; box-sizing: border-box;
+    }
+    .date-input:focus { outline: none; border-color: #2D2D2D; }
+    .btn-save-dates {
+      padding: 9px 0; background: #2D2D2D; color: #fff;
+      border: none; border-radius: 8px; font-size: 13px; font-weight: 700;
+      cursor: pointer; width: 100%; margin-top: 4px;
+    }
+    .btn-save-dates:hover { background: #1a1a1a; }
+
+    /* Pipeline candidates */
+    .pipeline-card {
+      background: #fff; border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      margin-bottom: 12px; overflow: hidden;
+    }
+    .pipeline-card-top {
+      display: grid; grid-template-columns: 1fr auto;
+      padding: 14px 18px; align-items: center; gap: 12px;
+    }
+    .pipeline-candidate-name { font-size: 14px; font-weight: 700; color: #2D2D2D; }
+    .pipeline-candidate-sub  { font-size: 11px; color: #8A9AAA; margin-top: 2px; }
+    .pipeline-card-bottom {
+      border-top: 1px solid #F0F4F8; padding: 10px 18px;
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+
+    /* Stage badge */
+    .stage-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+    .stage-blue   { background:#E3F2FD; color:#1565C0; }
+    .stage-orange { background:#FFF3E0; color:#E65100; }
+    .stage-green  { background:#E8F5E9; color:#2E7D32; }
+    .stage-red    { background:#FCE4EC; color:#C62828; }
+    .stage-grey   { background:#ECEFF1; color:#546E7A; }
+
+    /* Stage form */
+    .stage-form { display: flex; align-items: center; gap: 8px; }
+    .stage-select {
+      padding: 6px 10px; border: 1.5px solid #D8E2EC; border-radius: 7px;
+      font-size: 12px; color: #1A2332; min-width: 170px;
+    }
+    .stage-btn {
+      padding: 6px 14px; background: #2D2D2D; color: #fff;
+      border: none; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+
+    /* Offer letter */
+    .offer-section { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+    .offer-upload-label {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 10px; border: 1.5px dashed #D8E2EC; border-radius: 7px;
+      font-size: 11px; font-weight: 600; color: #4A5A6A; cursor: pointer;
+    }
+    .offer-upload-label:hover { border-color: #2D2D2D; color: #2D2D2D; }
+    .offer-upload-input { display: none; }
+    .dl-link {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 600; color: #2D2D2D; text-decoration: none;
+      padding: 4px 10px; border: 1.5px solid #D8E2EC; border-radius: 6px;
+      transition: border-color 0.15s, background 0.15s; white-space: nowrap;
+    }
+    .dl-link:hover { border-color: #2D2D2D; background: #F5F8FB; }
+
+    /* Stage progress bar */
+    .stage-bar { display: flex; gap: 0; margin-bottom: 20px; border-radius: 8px; overflow: hidden; }
+    .stage-bar-item {
+      flex: 1; padding: 7px 4px; text-align: center;
+      font-size: 9px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.3px; background: #E8EDF3; color: #7A8A9A;
+      border-right: 1px solid #fff;
+    }
+    .stage-bar-item:last-child { border-right: none; }
+    .stage-bar-item.has-candidates { background: #2D2D2D; color: #fff; }
+    .stage-bar-item.stage-offer    { background: #E65100; color: #fff; }
+    .stage-bar-item.stage-accepted { background: #2E7D32; color: #fff; }
+    .stage-bar-item.stage-declined { background: #C62828; color: #fff; }
+    .stage-bar-item.stage-removed  { background: #78909C; color: #fff; }
+
+    .empty-state {
+      text-align: center; padding: 48px 24px;
+      background: #fff; border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      color: #8A9AAA;
+    }
+
+    .btn-delete {
+      background: none; border: 1.5px solid #FFCDD2;
+      border-radius: 7px; padding: 5px 10px;
+      font-size: 11px; font-weight: 600; color: #C62828; cursor: pointer;
+    }
+    .btn-delete:hover { background: #FFEBEE; }
+  </style>
+</head>
+<body>
+
+<div class="admin-header">
+  <div class="admin-header-inner">
+    <img src="/static/logo.png" alt="Mason Dynamics LTD" />
+    <div style="display:flex;align-items:center;gap:10px;">
+      <a href="/admin/home"   class="btn-nav">&#127968; Home</a>
+      <a href="/admin/jobs"   class="btn-nav">&#8592; Jobs</a>
+      <a href="/admin/dashboard" class="btn-nav">&#128101; Candidates</a>
+      <a href="/admin/logout" class="btn-nav">Sign Out</a>
+    </div>
+  </div>
+</div>
+
+<div class="admin-body">
+
+  <!-- Job banner -->
+  <div class="job-banner">
+    <div class="job-banner-title">{{ job['Job Title'] }}</div>
+    <div class="job-banner-client">{{ job['Company Name'] }}</div>
+    <div class="job-banner-tags">
+      {% if job.get('Location') %}<span class="jb-tag">📍 {{ job['Location'] }}</span>{% endif %}
+      {% if job.get('Salary Band') %}<span class="jb-tag">💰 {{ job['Salary Band'] }}</span>{% endif %}
+      {% if job.get('Assigned To') %}<span class="jb-tag">🎯 {{ job['Assigned To'] }}</span>{% endif %}
+      <span class="jb-tag">👥 {{ assignments | length }} candidate{% if assignments | length != 1 %}s{% endif %}</span>
+    </div>
+  </div>
+
+  <div class="detail-layout">
+
+    <!-- LEFT: Job info + financials + dates -->
+    <div>
+
+      <!-- Job Details -->
+      <div class="card">
+        <div class="card-header">Job Details</div>
+        <div class="card-body" style="padding-top:8px;padding-bottom:8px;">
+          <div class="info-row">
+            <span class="info-label">Client</span>
+            <span class="info-value">{{ job.get('Company Name', '—') }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Location</span>
+            <span class="info-value">{{ job.get('Location', '—') }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Salary Band</span>
+            <span class="info-value">
+              {% if job.get('Salary Band') %}{{ currency_symbol }}{{ job['Salary Band'] }} ({{ currency_code }}){% else %}—{% endif %}
+            </span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Contact Person</span>
+            <span class="info-value">{{ job.get('Contact Person', '—') }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Assigned To</span>
+            <span class="info-value">{{ job.get('Assigned To', '—') }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Date Added</span>
+            <span class="info-value">{{ job.get('Date Added', '—') }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fee & Status -->
+      <div class="card">
+        <div class="card-header">Fee &amp; Status</div>
+        <div class="card-body">
+
+          {% if client and client.get('Fee Percentage') %}
+          <div class="info-row" style="padding-top:0;">
+            <span class="info-label">Agreed Fee</span>
+            <span class="info-value">{{ client['Fee Percentage'] }}% of salary</span>
+          </div>
+          {% endif %}
+
+          {% if fee_low is not none %}
+          <div class="fee-box">
+            <div class="fee-box-label">💰 Expected Fee</div>
+            <div class="fee-box-value">
+              {% if fee_low == fee_high %}
+                {{ currency_symbol }}{{ "{:,.0f}".format(fee_low) }}
+              {% else %}
+                {{ currency_symbol }}{{ "{:,.0f}".format(fee_low) }} – {{ currency_symbol }}{{ "{:,.0f}".format(fee_high) }}
+              {% endif %}
+            </div>
+            <div class="fee-box-sub">Based on {{ client['Fee Percentage'] }}% of salary band ({{ currency_code }})</div>
+          </div>
+          {% else %}
+          <p style="font-size:12px;color:#9AABB8;margin:0;">Set a salary band and client fee % to calculate expected fee.</p>
+          {% endif %}
+
+          <!-- Status -->
+          <div style="margin-top:16px;">
+            {% set s = job.get('Status', 'Open') %}
+            {% set status_cls = {'Open':'status-open','Successfully filled':'status-filled','Closed unsuccessfully':'status-closed','On hold':'status-hold'}.get(s, 'status-open') %}
+            <form method="POST" action="/admin/jobs/status/{{ job['Job ID'] }}" style="display:flex;align-items:center;gap:10px;">
+              <span class="info-label" style="white-space:nowrap;">Role Status</span>
+              <select name="status" class="status-select {{ status_cls }}" onchange="this.form.submit()">
+                <option {% if s=='Open' %}selected{% endif %}>Open</option>
+                <option {% if s=='Successfully filled' %}selected{% endif %}>Successfully filled</option>
+                <option {% if s=='Closed unsuccessfully' %}selected{% endif %}>Closed unsuccessfully</option>
+                <option {% if s=='On hold' %}selected{% endif %}>On hold</option>
+              </select>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dates & Currency -->
+      <div class="card">
+        <div class="card-header">Key Dates &amp; Currency</div>
+        <div class="card-body">
+          <form method="POST" action="/admin/jobs/{{ job['Job ID'] }}/update" class="date-form">
+            <div class="date-row">
+              <label class="date-label">Salary Currency</label>
+              <select name="currency" class="date-input" style="padding:7px 12px;">
+                {% set cur = job.get('Currency', 'USD') or 'USD' %}
+                <option value="GBP"  {% if cur=='GBP'  %}selected{% endif %}>GBP — £ British Pound</option>
+                <option value="USD"  {% if cur=='USD'  %}selected{% endif %}>USD — $ US Dollar</option>
+                <option value="EUR"  {% if cur=='EUR'  %}selected{% endif %}>EUR — € Euro</option>
+                <option value="CAD"  {% if cur=='CAD'  %}selected{% endif %}>CAD — CA$ Canadian Dollar</option>
+                <option value="AUD"  {% if cur=='AUD'  %}selected{% endif %}>AUD — A$ Australian Dollar</option>
+                <option value="CHF"  {% if cur=='CHF'  %}selected{% endif %}>CHF — Swiss Franc</option>
+                <option value="JPY"  {% if cur=='JPY'  %}selected{% endif %}>JPY — ¥ Japanese Yen</option>
+                <option value="SGD"  {% if cur=='SGD'  %}selected{% endif %}>SGD — S$ Singapore Dollar</option>
+                <option value="HKD"  {% if cur=='HKD'  %}selected{% endif %}>HKD — HK$ Hong Kong Dollar</option>
+                <option value="AED"  {% if cur=='AED'  %}selected{% endif %}>AED — UAE Dirham</option>
+                <option value="INR"  {% if cur=='INR'  %}selected{% endif %}>INR — ₹ Indian Rupee</option>
+              </select>
+            </div>
+            <div class="date-row">
+              <label class="date-label">Expected Start Date</label>
+              <input type="date" name="expected_start_date" class="date-input"
+                     value="{{ job.get('Expected Start Date', '') }}" />
+            </div>
+            <div class="date-row">
+              <label class="date-label">Expected Invoice Date</label>
+              <input type="date" name="expected_invoice_date" class="date-input"
+                     value="{{ job.get('Expected Invoice Date', '') }}" />
+            </div>
+            <input type="hidden" name="status" value="{{ job.get('Status', 'Open') }}" />
+            <button type="submit" class="btn-save-dates">Save</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Delete job -->
+      <form method="POST" action="/admin/jobs/delete/{{ job['Job ID'] }}"
+            onsubmit="return confirm('Delete this job? All candidate assignments will also be removed.')">
+        <button type="submit" class="btn-delete" style="width:100%;padding:10px;">&#128465; Delete This Job</button>
+      </form>
+
+    </div>
+
+    <!-- RIGHT: Advert + Pipeline -->
+    <div>
+
+      <!-- Stage progress bar -->
+      {% set stage_counts = {} %}
+      {% for a in assignments %}
+        {% set st = a.get('Stage','') %}
+        {% if st %}{% set _ = stage_counts.update({st: stage_counts.get(st, 0) + 1}) %}{% endif %}
+      {% endfor %}
+      {% if assignments %}
+      <div class="stage-bar">
+        {% for stage in stages %}
+        {% set count = stage_counts.get(stage, 0) %}
+        {% set col = stage_colours.get(stage, 'blue') %}
+        <div class="stage-bar-item {% if count > 0 %}has-candidates stage-{{ col }}{% endif %}">
+          {{ stage }}<br>{% if count > 0 %}<span style="font-size:13px;">{{ count }}</span>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="card-header" style="background:#fff;border-radius:12px 12px 0 0;margin-bottom:0;">
+        Candidates in Pipeline
+      </div>
+
+      {% if assignments %}
+        {% for a in assignments %}
+        {% set cand = candidates_by_date.get(a['Candidate Date'], {}) %}
+        {% set stage = a.get('Stage', '') %}
+        {% set col = stage_colours.get(stage, 'grey') if stage else 'grey' %}
+        <div class="pipeline-card">
+          <div class="pipeline-card-top">
+            <div>
+              <a href="/admin/candidate/{{ a['Candidate Date'] | urlquote }}" style="text-decoration:none;">
+                <div class="pipeline-candidate-name">{{ cand.get('Full Name', a['Candidate Name']) }}</div>
+              </a>
+              <div class="pipeline-candidate-sub">
+                {{ cand.get('Current Job Title','') }}{% if cand.get('Current Company') %} at {{ cand['Current Company'] }}{% endif %}
+                {% if cand.get('Email') %}&nbsp;·&nbsp; {{ cand['Email'] }}{% endif %}
+              </div>
+            </div>
+            <div>
+              {% if stage %}
+              <span class="stage-badge stage-{{ col }}">{{ stage }}</span>
+              {% else %}
+              <span class="stage-badge stage-grey">Not started</span>
+              {% endif %}
+            </div>
+          </div>
+          <div class="pipeline-card-bottom">
+            <form method="POST" action="/admin/pipeline/stage" class="stage-form">
+              <input type="hidden" name="job_id" value="{{ job['Job ID'] }}" />
+              <input type="hidden" name="candidate_date" value="{{ a['Candidate Date'] }}" />
+              <select name="stage" class="stage-select">
+                <option value="">— Update stage —</option>
+                {% for s in stages %}
+                <option value="{{ s }}" {% if stage == s %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+              </select>
+              <button type="submit" class="stage-btn">Update</button>
+            </form>
+            <div class="offer-section">
+              {% if a.get('Offer Letter Filename') %}
+              <a href="/admin/pipeline/offer_letter/download/{{ a['Offer Letter Filename'] }}" class="dl-link">📄 Offer Letter</a>
+              {% endif %}
+              <form method="POST" action="/admin/pipeline/offer_letter" enctype="multipart/form-data" style="display:flex;align-items:center;">
+                <input type="hidden" name="job_id" value="{{ job['Job ID'] }}" />
+                <input type="hidden" name="candidate_date" value="{{ a['Candidate Date'] }}" />
+                <label class="offer-upload-label" for="offer_{{ loop.index }}">
+                  ⬆ {% if a.get('Offer Letter Filename') %}Replace{% else %}Upload{% endif %} Offer Letter
+                  <input type="file" class="offer-upload-input" id="offer_{{ loop.index }}"
+                         name="offer_letter" accept=".pdf,.doc,.docx"
+                         onchange="this.closest('form').submit()" />
+                </label>
+              </form>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+      <div class="empty-state" style="border-radius:0 0 12px 12px;">
+        <div style="font-size:32px;">📋</div>
+        <p style="margin-top:10px;">No candidates assigned to this role yet.</p>
+        <p style="margin-top:6px;font-size:12px;">Assign candidates from the <a href="/admin/dashboard" style="color:#2D2D2D;">Candidates</a> page.</p>
+      </div>
+      {% endif %}
+
+      <!-- Job Advert editor -->
+      <div class="card" style="margin-top:20px;">
+        <div class="card-header">
+          <span>📢 Job Advert</span>
+          <div style="display:flex;gap:8px;align-items:center;">
+            {% if job.get('Show on Website') == 'yes' %}
+            <span style="font-size:11px;font-weight:700;color:#2E7D32;background:#E8F5E9;padding:3px 10px;border-radius:20px;">🟢 Live</span>
+            {% else %}
+            <span style="font-size:11px;font-weight:700;color:#9AABB8;background:#ECEFF1;padding:3px 10px;border-radius:20px;">⚫ Hidden</span>
+            {% endif %}
+            <a href="/jobs/{{ job['Job ID'] }}/apply" target="_blank" class="btn-nav" style="font-size:11px;padding:4px 10px;">Preview ↗</a>
+          </div>
+        </div>
+        <div class="card-body">
+          <!-- Auto-filled preview strip -->
+          <div style="background:#F5F8FB;border:1px solid #E0E8F0;border-radius:8px;padding:14px 16px;margin-bottom:16px;">
+            <div style="font-size:14px;font-weight:800;color:#2D2D2D;margin-bottom:4px;">{{ job['Job Title'] }}</div>
+            <div style="font-size:12px;color:#5A6A7A;display:flex;gap:16px;flex-wrap:wrap;">
+              {% if job.get('Location') %}<span>📍 {{ job['Location'] }}</span>{% endif %}
+              {% if job.get('Salary Band') %}<span>💰 {{ currency_symbol }}{{ job['Salary Band'] }} ({{ currency_code }})</span>{% endif %}
+              {% if job.get('Company Name') %}<span>🏢 {{ job['Company Name'] }}</span>{% endif %}
+            </div>
+          </div>
+          <form method="POST" action="/admin/jobs/{{ job['Job ID'] }}/advert">
+            <div style="margin-bottom:12px;">
+              <label style="font-size:11px;font-weight:700;color:#4A5A6A;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px;">Advert Text</label>
+              <textarea name="advert_text" rows="10"
+                placeholder="Write the role description here — responsibilities, requirements, what makes this opportunity exciting…"
+                style="width:100%;padding:10px 12px;border:1.5px solid #D8E2EC;border-radius:8px;font-size:13px;color:#1A2332;line-height:1.6;resize:vertical;font-family:inherit;box-sizing:border-box;">{{ job.get('Advert Text', '') }}</textarea>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:600;color:#1A2332;">
+                <input type="checkbox" name="show_on_website" value="yes"
+                       {% if job.get('Show on Website','yes') == 'yes' %}checked{% endif %}
+                       style="width:16px;height:16px;" />
+                Show on public jobs board
+              </label>
+              <div style="display:flex;gap:8px;">
+                <button type="button" onclick="copyApplyLink(this)"
+                  data-url="{{ request.host_url }}jobs/{{ job['Job ID'] }}/apply"
+                  style="padding:8px 14px;background:#EEF4FB;border:1.5px solid #C8D8EC;border-radius:7px;font-size:12px;font-weight:600;color:#2D2D2D;cursor:pointer;white-space:nowrap;">
+                  📋 Copy Apply Link
+                </button>
+                <button type="submit" style="padding:8px 20px;background:#2D2D2D;color:#fff;border:none;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;">
+                  Save Advert
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function copyApplyLink(btn) {
+  const url = btn.dataset.url;
+  navigator.clipboard.writeText(url).then(() => {
+    const orig = btn.innerHTML;
+    btn.innerHTML = "✅ Copied!";
+    btn.style.background = "#E6F4EA";
+    btn.style.borderColor = "#A5D6A7";
+    btn.style.color = "#2E7D32";
+    setTimeout(() => {
+      btn.innerHTML = orig;
+      btn.style.background = "";
+      btn.style.borderColor = "";
+      btn.style.color = "";
+    }, 2500);
+  });
+}
+</script>
+
+</body>
+</html>

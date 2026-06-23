@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Current Vacancies — Mason Dynamics LTD</title>
+  <link rel="icon" type="image/png" href="/static/favicon.png" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { background: #F0F4F9; margin: 0; font-family: "Inter", "Segoe UI", Arial, sans-serif; }
+
+    /* ── Header ── */
+    .site-header {
+      background: #fff;
+      border-bottom: 3px solid #2255CC;
+      padding: 0 32px;
+    }
+    .header-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 0;
+    }
+    .header-logo { height: 44px; }
+    .header-tagline {
+      font-size: 12px;
+      font-weight: 700;
+      color: #2D2D2D;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #2D2D2D 0%, #2255CC 100%);
+      color: #fff;
+      text-align: center;
+      padding: 56px 24px 48px;
+    }
+    .hero h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin: 0 0 12px;
+      letter-spacing: -0.5px;
+    }
+    .hero p {
+      font-size: 16px;
+      opacity: 0.85;
+      margin: 0;
+    }
+
+    /* ── Jobs list ── */
+    .jobs-body {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 24px 64px;
+    }
+
+    .jobs-meta {
+      font-size: 13px;
+      color: #7A8A9A;
+      margin-bottom: 20px;
+    }
+    .jobs-meta strong { color: #2D2D2D; }
+
+    /* ── Job card ── */
+    .job-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      padding: 28px 32px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      transition: box-shadow 0.15s, transform 0.15s;
+    }
+    .job-card:hover {
+      box-shadow: 0 4px 16px rgba(27,58,92,0.12);
+      transform: translateY(-1px);
+    }
+
+    .job-left { flex: 1; min-width: 0; }
+
+    .job-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #2D2D2D;
+      margin: 0 0 4px;
+    }
+    .job-company {
+      font-size: 14px;
+      font-weight: 600;
+      color: #4A6A8A;
+      margin: 0 0 14px;
+    }
+
+    .job-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .job-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #EEF4FB;
+      color: #2255CC;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .job-tag svg { flex-shrink: 0; }
+
+    .job-description {
+      font-size: 13px;
+      color: #4A5A6A;
+      line-height: 1.6;
+      margin: 0;
+      white-space: pre-line;
+    }
+
+    .job-right {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 12px;
+    }
+
+    .btn-apply {
+      display: inline-block;
+      background: #2D2D2D;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .btn-apply:hover { background: #1a1a1a; }
+
+    .job-date {
+      font-size: 11px;
+      color: #AAB8C8;
+    }
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center;
+      padding: 80px 24px;
+      color: #8A9AAA;
+    }
+    .empty-state .empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    .empty-state p {
+      font-size: 16px;
+      margin: 0 0 8px;
+      color: #5A6A7A;
+      font-weight: 600;
+    }
+    .empty-state small { font-size: 13px; }
+
+    /* ── Footer ── */
+    .site-footer {
+      background: #2D2D2D;
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+    }
+    .site-footer a { color: rgba(255,255,255,0.8); text-decoration: none; }
+    .site-footer a:hover { color: #fff; }
+
+    @media (max-width: 640px) {
+      .job-card { flex-direction: column; }
+      .job-right { align-items: flex-start; flex-direction: row; align-items: center; }
+      .hero h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/jobs"><img src="/static/logo.png" alt="Mason Dynamics LTD" class="header-logo" /></a>
+      <span class="header-tagline">Current Vacancies</span>
+    </div>
+  </header>
+
+  <div class="hero">
+    <h1>Open Positions</h1>
+    <p>Explore our latest opportunities and take the next step in your career.</p>
+  </div>
+
+  <div class="jobs-body">
+
+    {% if jobs %}
+    <p class="jobs-meta"><strong>{{ jobs | length }}</strong> open position{{ 's' if jobs | length != 1 else '' }} available</p>
+
+    {% for job in jobs %}
+    <div class="job-card">
+      <div class="job-left">
+        <h2 class="job-title">{{ job['Job Title'] }}</h2>
+        <p class="job-company">{{ job['Company Name'] }}</p>
+
+        <div class="job-tags">
+          {% if job.get('Location') and job['Location'] != '—' %}
+          <span class="job-tag">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            {{ job['Location'] }}
+          </span>
+          {% endif %}
+          {% if job.get('Salary Band') %}
+          <span class="job-tag">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            {{ job['Salary Band'] }}
+          </span>
+          {% endif %}
+        </div>
+
+        {% if job.get('Advert Text') %}
+        <p class="job-description">{{ job['Advert Text'][:220] }}{% if job['Advert Text']|length > 220 %}…{% endif %}</p>
+        {% elif job.get('Description') %}
+        <p class="job-description">{{ job['Description'] }}</p>
+        {% endif %}
+      </div>
+
+      <div class="job-right">
+        <a href="/jobs/{{ job['Job ID'] }}/apply" class="btn-apply">Apply Now</a>
+        <span class="job-date">Added {{ job['Date Added'][:10] }}</span>
+      </div>
+    </div>
+    {% endfor %}
+
+    {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">🔍</div>
+      <p>No open positions right now</p>
+      <small>Check back soon — we're always working on new opportunities.</small>
+    </div>
+    {% endif %}
+
+  </div>
+
+  <footer class="site-footer">
+    &copy; {{ 2026 }} Mason Dynamics LTD &nbsp;|&nbsp;
+    <a href="mailto:info@masondynamics.com">info@masondynamics.com</a> &nbsp;|&nbsp;
+    <a href="https://www.masondynamics.com" target="_blank">www.masondynamics.com</a>
+  </footer>
+
+</body>
+</html>

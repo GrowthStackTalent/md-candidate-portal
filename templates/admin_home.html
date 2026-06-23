@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Mason Dynamics LTD</title>
+  <link rel="icon" type="image/png" href="/static/favicon.png" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <style>
+    body { background: #F0F4F9; margin: 0; font-family: 'Inter', 'Segoe UI', sans-serif; }
+
+    /* ── Header ── */
+    .home-header {
+      background: #fff;
+      border-bottom: 3px solid #2255CC;
+      padding: 0 32px;
+    }
+    .home-header-inner {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+    }
+    .home-header img { height: 44px; }
+    .home-header-nav { display: flex; gap: 10px; align-items: center; }
+    .nav-btn {
+      background: none;
+      border: 1.5px solid #D8E2EC;
+      border-radius: 8px; padding: 7px 14px;
+      font-size: 12px; font-weight: 600; color: #2D2D2D;
+      cursor: pointer; text-decoration: none;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .nav-btn:hover { border-color: #2D2D2D; background: #F5F8FB; }
+    .nav-btn.signout {
+      color: #5A6A7A; border-color: #D8E2EC;
+    }
+    .nav-btn.signout:hover { border-color: #2D2D2D; color: #2D2D2D; }
+
+    /* ── Hero strip ── */
+    .hero {
+      background: #F0F4F9;
+      border-bottom: 1px solid #E0E8F0;
+      padding: 36px 32px 44px;
+      color: #2D2D2D;
+    }
+    .hero h1 { font-size: 26px; font-weight: 800; margin: 0 0 6px; }
+    .hero p  { font-size: 14px; color: #5A6A7A; margin: 0; }
+
+    /* ── Body ── */
+    .home-body { max-width: 1400px; margin: -24px auto 0; padding: 0 24px 60px; position: relative; z-index: 1; }
+
+    /* ── Section label ── */
+    .section-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.8px; color: #7A8A9A; margin: 32px 0 14px;
+    }
+
+    /* ── Tile grid ── */
+    .tile-grid { display: grid; gap: 16px; }
+    .tile-grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .tile-grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+    .tile {
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      padding: 24px 28px;
+      display: flex; flex-direction: column; gap: 8px;
+      transition: box-shadow 0.15s, transform 0.15s;
+    }
+    .tile-link { text-decoration: none; cursor: pointer; }
+    .tile-link:hover { box-shadow: 0 6px 20px rgba(27,58,92,0.13); transform: translateY(-2px); }
+
+    .tile-icon { font-size: 26px; margin-bottom: 2px; }
+    .tile-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.7px; color: #8A9AAA;
+    }
+    .tile-value { font-size: 36px; font-weight: 800; color: #2D2D2D; line-height: 1; }
+    .tile-sub   { font-size: 12px; color: #A0AABB; margin-top: 2px; }
+
+    /* Accent colours */
+    .tile-accent-blue   .tile-value { color: #1565C0; }
+    .tile-accent-green  .tile-value { color: #2E7D32; }
+    .tile-accent-orange .tile-value { color: #E65100; }
+    .tile-accent-teal   .tile-value { color: #00695C; }
+    .tile-accent-purple .tile-value { color: #6A1B9A; }
+    .tile-accent-navy   .tile-value { color: #2D2D2D; }
+
+    .tile-accent-blue   { border-top: 3px solid #1565C0; }
+    .tile-accent-green  { border-top: 3px solid #2E7D32; }
+    .tile-accent-orange { border-top: 3px solid #E65100; }
+    .tile-accent-teal   { border-top: 3px solid #00695C; }
+    .tile-accent-purple { border-top: 3px solid #6A1B9A; }
+    .tile-accent-navy   { border-top: 3px solid #2D2D2D; }
+
+    /* ── Recent submissions table ── */
+    .card {
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      overflow: hidden; margin-top: 32px;
+    }
+    .card-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid #EEF2F6;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-header-title { font-size: 14px; font-weight: 700; color: #2D2D2D; }
+    .card-header a {
+      font-size: 12px; font-weight: 600; color: #2D2D2D;
+      text-decoration: none; padding: 5px 12px;
+      border: 1.5px solid #D8E2EC; border-radius: 6px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .card-header a:hover { border-color: #2D2D2D; background: #F5F8FB; }
+
+    .recent-table { width: 100%; border-collapse: collapse; }
+    .recent-table th {
+      background: #F5F8FB; padding: 10px 20px;
+      text-align: left; font-size: 11px; font-weight: 700;
+      color: #5A6A7A; text-transform: uppercase; letter-spacing: 0.6px;
+      border-bottom: 1px solid #EEF2F6;
+    }
+    .recent-table td {
+      padding: 13px 20px; font-size: 13px; color: #2A3A4A;
+      border-bottom: 1px solid #F0F4F8; vertical-align: middle;
+    }
+    .recent-table tr:last-child td { border-bottom: none; }
+    .recent-table tr:hover td { background: #FAFBFD; cursor: pointer; }
+    .td-name { font-weight: 700; color: #2D2D2D; }
+    .td-sub  { font-size: 11px; color: #8A9AAA; margin-top: 2px; }
+
+    .stage-pill {
+      display: inline-block; padding: 3px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 700;
+    }
+    .pill-blue   { background:#E3F2FD; color:#1565C0; }
+    .pill-orange { background:#FFF3E0; color:#E65100; }
+    .pill-green  { background:#E8F5E9; color:#2E7D32; }
+    .pill-red    { background:#FCE4EC; color:#C62828; }
+    .pill-grey   { background:#ECEFF1; color:#546E7A; }
+
+    @media (max-width: 900px) {
+      .tile-grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .tile-grid-3 { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 560px) {
+      .tile-grid-4, .tile-grid-3 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="home-header">
+  <div class="home-header-inner">
+    <img src="/static/logo.png" alt="Mason Dynamics LTD" />
+    <nav class="home-header-nav">
+      <a href="/admin/dashboard" class="nav-btn">&#128101; Candidates</a>
+      <a href="/admin/jobs"      class="nav-btn">&#128188; Jobs</a>
+      <a href="/admin/clients"   class="nav-btn">&#127970; Clients</a>
+      <a href="/admin/logout"    class="nav-btn signout">Sign Out</a>
+    </nav>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>Good {{ greeting }}, welcome back.</h1>
+  <p>Here's an overview of your recruitment pipeline.</p>
+</div>
+
+<div class="home-body">
+
+  <!-- Business overview -->
+  <div class="section-label">Business Overview</div>
+  <div class="tile-grid tile-grid-3">
+
+    <a href="/admin/jobs" class="tile tile-link tile-accent-navy">
+      <div class="tile-icon">&#128188;</div>
+      <div class="tile-label">Active Jobs</div>
+      <div class="tile-value">{{ active_jobs }}</div>
+      <div class="tile-sub">Open roles</div>
+    </a>
+
+    <a href="/admin/dashboard" class="tile tile-link tile-accent-blue">
+      <div class="tile-icon">&#128101;</div>
+      <div class="tile-label">Candidates</div>
+      <div class="tile-value">{{ total_candidates }}</div>
+      <div class="tile-sub">{{ candidates_this_month }} added this month</div>
+    </a>
+
+    <a href="/admin/clients" class="tile tile-link tile-accent-teal">
+      <div class="tile-icon">&#127970;</div>
+      <div class="tile-label">Active Clients</div>
+      <div class="tile-value">{{ active_clients }}</div>
+      <div class="tile-sub">Client relationships</div>
+    </a>
+
+  </div>
+
+  <!-- Pipeline -->
+  <div class="section-label">Recruitment Pipeline</div>
+  <div class="tile-grid tile-grid-4">
+
+    <div class="tile tile-accent-blue">
+      <div class="tile-icon">&#128203;</div>
+      <div class="tile-label">At Interview</div>
+      <div class="tile-value">{{ at_interview }}</div>
+      <div class="tile-sub">Across all stages</div>
+    </div>
+
+    <div class="tile tile-accent-orange">
+      <div class="tile-icon">&#128233;</div>
+      <div class="tile-label">At Offer Stage</div>
+      <div class="tile-value">{{ at_offer }}</div>
+      <div class="tile-sub">Offer sent, awaiting response</div>
+    </div>
+
+    <div class="tile tile-accent-green">
+      <div class="tile-icon">&#10003;</div>
+      <div class="tile-label">Offers Accepted</div>
+      <div class="tile-value">{{ accepted }}</div>
+      <div class="tile-sub">Successful placements</div>
+    </div>
+
+    <div class="tile tile-accent-purple">
+      <div class="tile-icon">&#128176;</div>
+      <div class="tile-label">Placement Value</div>
+      <div class="tile-value">
+        {% if accepted_value >= 1000 %}
+          £{{ "{:,.0f}".format(accepted_value) }}
+        {% elif accepted_value > 0 %}
+          £{{ "{:.0f}".format(accepted_value) }}
+        {% else %}
+          —
+        {% endif %}
+      </div>
+      <div class="tile-sub">Total fees from accepted offers</div>
+    </div>
+
+  </div>
+
+  <!-- Extra insight -->
+  <div class="section-label">Pipeline Health</div>
+  <div class="tile-grid tile-grid-3">
+
+    <div class="tile tile-accent-navy">
+      <div class="tile-icon">&#128203;</div>
+      <div class="tile-label">Unplaced Candidates</div>
+      <div class="tile-value">{{ unplaced }}</div>
+      <div class="tile-sub">Not yet assigned to any role</div>
+    </div>
+
+    <div class="tile tile-accent-teal">
+      <div class="tile-icon">&#128198;</div>
+      <div class="tile-label">Added This Month</div>
+      <div class="tile-value">{{ candidates_this_month }}</div>
+      <div class="tile-sub">New candidates in pipeline</div>
+    </div>
+
+    <div class="tile tile-accent-green">
+      <div class="tile-icon">&#128218;</div>
+      <div class="tile-label">Jobs Filled</div>
+      <div class="tile-value">{{ filled_jobs }}</div>
+      <div class="tile-sub">Successfully closed roles</div>
+    </div>
+
+  </div>
+
+  <!-- Recent submissions -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-header-title">&#128338; Recent Submissions</span>
+      <a href="/admin/dashboard">View all</a>
+    </div>
+    {% if recent %}
+    <table class="recent-table">
+      <thead>
+        <tr>
+          <th>Candidate</th>
+          <th>Email</th>
+          <th>Current Role</th>
+          <th>Location</th>
+          <th>Submitted</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in recent %}
+        <tr onclick="window.location='/admin/candidate/{{ c['Submission Date'] | urlquote }}'" >
+          <td>
+            <div class="td-name">{{ c.get('Full Name', '—') }}</div>
+          </td>
+          <td style="color:#5A6A7A;">{{ c.get('Email', '—') }}</td>
+          <td>
+            <div>{{ c.get('Current Job Title', '—') }}</div>
+            <div class="td-sub">{{ c.get('Current Company', '') }}</div>
+          </td>
+          <td style="color:#5A6A7A;">{{ c.get('Location', '—') }}</td>
+          <td style="color:#8A9AAA;white-space:nowrap;font-size:12px;">{{ c.get('Submission Date', '—') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div style="padding:48px 24px;text-align:center;color:#8A9AAA;">
+      <div style="font-size:32px;">&#128203;</div>
+      <p style="margin-top:10px;">No submissions yet.</p>
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+
+<script>
+  // Time-based greeting
+  const h = new Date().getHours();
+  const g = h < 12 ? "morning" : h < 17 ? "afternoon" : "evening";
+  document.querySelector(".hero h1").textContent =
+    "Good " + g + ", welcome back.";
+</script>
+
+</body>
+</html>

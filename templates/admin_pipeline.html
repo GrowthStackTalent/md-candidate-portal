@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pipeline — {{ job['Job Title'] }} — Mason Dynamics LTD</title>
+  <link rel="icon" type="image/png" href="/static/favicon.png" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <style>
+    body { background: #F0F4F9; }
+
+    .admin-header {
+      background: #fff; border-bottom: 3px solid #2255CC;
+      padding: 0 32px; margin-bottom: 28px;
+    }
+    .admin-header-inner {
+      display: flex; align-items: center;
+      justify-content: space-between; padding: 14px 0;
+    }
+    .admin-header img { height: 44px; }
+    .btn-nav {
+      background: none; border: 1.5px solid #D8E2EC;
+      border-radius: 7px; padding: 7px 14px;
+      font-size: 12px; font-weight: 600; color: #5A6A7A;
+      cursor: pointer; text-decoration: none;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-nav:hover { border-color: #2D2D2D; color: #2D2D2D; }
+
+    .admin-body { max-width: 1100px; margin: 0 auto; padding: 0 24px 60px; }
+
+    .job-banner {
+      background: #2D2D2D; color: #fff;
+      border-radius: 10px; padding: 20px 28px;
+      margin-bottom: 28px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .job-banner-title { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+    .job-banner-sub   { font-size: 13px; opacity: 0.75; }
+    .job-banner-meta  { text-align: right; font-size: 13px; opacity: 0.8; }
+
+    /* Stage progress bar */
+    .stage-bar {
+      display: flex; gap: 0; margin-bottom: 32px;
+      border-radius: 8px; overflow: hidden;
+    }
+    .stage-bar-item {
+      flex: 1; padding: 8px 4px; text-align: center;
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.4px; background: #E8EDF3; color: #7A8A9A;
+      border-right: 1px solid #fff;
+    }
+    .stage-bar-item:last-child { border-right: none; }
+    .stage-bar-item.has-candidates { background: #2D2D2D; color: #fff; }
+    .stage-bar-item.stage-offer    { background: #E65100; color: #fff; }
+    .stage-bar-item.stage-accepted { background: #2E7D32; color: #fff; }
+    .stage-bar-item.stage-declined { background: #C62828; color: #fff; }
+    .stage-bar-item.stage-removed  { background: #78909C; color: #fff; }
+
+    /* Candidate cards */
+    .pipeline-card {
+      background: #fff; border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      margin-bottom: 16px; overflow: hidden;
+    }
+    .pipeline-card-top {
+      display: grid; grid-template-columns: 1fr auto;
+      padding: 16px 20px; align-items: center; gap: 16px;
+    }
+    .pipeline-candidate-name { font-size: 15px; font-weight: 700; color: #2D2D2D; }
+    .pipeline-candidate-sub  { font-size: 12px; color: #8A9AAA; margin-top: 2px; }
+    .pipeline-card-bottom {
+      border-top: 1px solid #F0F4F8;
+      padding: 12px 20px;
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    }
+
+    /* Stage badge */
+    .stage-badge {
+      display: inline-block; padding: 4px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: 700;
+    }
+    .stage-blue   { background: #E3F2FD; color: #1565C0; }
+    .stage-orange { background: #FFF3E0; color: #E65100; }
+    .stage-green  { background: #E8F5E9; color: #2E7D32; }
+    .stage-red    { background: #FCE4EC; color: #C62828; }
+    .stage-grey   { background: #ECEFF1; color: #546E7A; }
+
+    /* Stage select */
+    .stage-form { display: flex; align-items: center; gap: 8px; }
+    .stage-select {
+      padding: 6px 10px; border: 1.5px solid #D8E2EC; border-radius: 7px;
+      font-size: 12px; color: #1A2332; min-width: 180px;
+    }
+    .stage-btn {
+      padding: 6px 14px; background: #2D2D2D; color: #fff;
+      border: none; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+
+    /* Offer letter */
+    .offer-section { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+    .offer-upload-label {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 12px; border: 1.5px dashed #D8E2EC; border-radius: 7px;
+      font-size: 12px; font-weight: 600; color: #4A5A6A; cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .offer-upload-label:hover { border-color: #2D2D2D; color: #2D2D2D; }
+    .offer-upload-input { display: none; }
+    .offer-upload-btn {
+      padding: 6px 12px; background: #2D2D2D; color: #fff;
+      border: none; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+    .dl-link {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; font-weight: 600; color: #2D2D2D; text-decoration: none;
+      padding: 4px 10px; border: 1.5px solid #D8E2EC; border-radius: 6px;
+      transition: border-color 0.15s, background 0.15s; white-space: nowrap;
+    }
+    .dl-link:hover { border-color: #2D2D2D; background: #F5F8FB; }
+
+    .empty-state {
+      text-align: center; padding: 64px 24px;
+      background: #fff; border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      color: #8A9AAA;
+    }
+  </style>
+</head>
+<body>
+
+<div class="admin-header">
+  <div class="admin-header-inner">
+    <div style="display:flex;align-items:center;gap:20px;">
+      <img src="/static/logo.png" alt="Mason Dynamics LTD" />
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <a href="/admin/home" class="btn-nav">&#127968; Home</a>
+      <a href="/admin/jobs" class="btn-nav">&#8592; Jobs</a>
+      <a href="/admin/dashboard" class="btn-nav">&#128101; Candidates</a>
+      <a href="/admin/logout" class="btn-nav">Sign Out</a>
+    </div>
+  </div>
+</div>
+
+<div class="admin-body">
+
+  <!-- Job banner -->
+  <div class="job-banner">
+    <div>
+      <div class="job-banner-title">{{ job['Job Title'] }}</div>
+      <div class="job-banner-sub">{{ job['Company Name'] }} &nbsp;·&nbsp; {{ job.get('Location','') }}</div>
+    </div>
+    <div class="job-banner-meta">
+      <div>{{ job.get('Salary Band','') }}</div>
+      <div style="margin-top:4px;">Assigned to: {{ job.get('Assigned To','—') }}</div>
+      <div style="margin-top:4px;">{{ assignments | length }} candidate{% if assignments | length != 1 %}s{% endif %} in pipeline</div>
+    </div>
+  </div>
+
+  <!-- Stage progress overview -->
+  {% set stage_counts = {} %}
+  {% for a in assignments %}
+    {% set s = a.get('Stage','') %}
+    {% if s %}{% set _ = stage_counts.update({s: stage_counts.get(s, 0) + 1}) %}{% endif %}
+  {% endfor %}
+  <div class="stage-bar">
+    {% for stage in stages %}
+    {% set count = stage_counts.get(stage, 0) %}
+    {% set col = stage_colours.get(stage, 'blue') %}
+    <div class="stage-bar-item {% if count > 0 %}has-candidates stage-{{ col }}{% endif %}">
+      {{ stage }}<br>{% if count > 0 %}<span style="font-size:14px;">{{ count }}</span>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Candidate pipeline cards -->
+  {% if assignments %}
+    {% for a in assignments %}
+    {% set cand = candidates_by_date.get(a['Candidate Date'], {}) %}
+    {% set stage = a.get('Stage', '') %}
+    {% set col = stage_colours.get(stage, 'grey') if stage else 'grey' %}
+    <div class="pipeline-card">
+      <div class="pipeline-card-top">
+        <div>
+          <a href="/admin/candidate/{{ a['Candidate Date'] | urlquote }}" style="text-decoration:none;">
+            <div class="pipeline-candidate-name">{{ cand.get('Full Name', a['Candidate Name']) }}</div>
+          </a>
+          <div class="pipeline-candidate-sub">
+            {{ cand.get('Current Job Title','') }}{% if cand.get('Current Company') %} at {{ cand['Current Company'] }}{% endif %}
+            {% if cand.get('Email') %}&nbsp;·&nbsp; {{ cand['Email'] }}{% endif %}
+          </div>
+        </div>
+        <div>
+          {% if stage %}
+          <span class="stage-badge stage-{{ col }}">{{ stage }}</span>
+          {% else %}
+          <span class="stage-badge stage-grey">Not started</span>
+          {% endif %}
+        </div>
+      </div>
+      <div class="pipeline-card-bottom">
+        <!-- Stage update -->
+        <form method="POST" action="/admin/pipeline/stage" class="stage-form">
+          <input type="hidden" name="job_id" value="{{ job['Job ID'] }}" />
+          <input type="hidden" name="candidate_date" value="{{ a['Candidate Date'] }}" />
+          <select name="stage" class="stage-select">
+            <option value="">— Update stage —</option>
+            {% for s in stages %}
+            <option value="{{ s }}" {% if stage == s %}selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="stage-btn">Update</button>
+        </form>
+
+        <!-- Offer letter -->
+        <div class="offer-section">
+          {% if a.get('Offer Letter Filename') %}
+          <a href="/admin/pipeline/offer_letter/download/{{ a['Offer Letter Filename'] }}" class="dl-link">&#128196; Offer Letter</a>
+          {% endif %}
+          <form method="POST" action="/admin/pipeline/offer_letter" enctype="multipart/form-data" style="display:flex;align-items:center;gap:6px;">
+            <input type="hidden" name="job_id" value="{{ job['Job ID'] }}" />
+            <input type="hidden" name="candidate_date" value="{{ a['Candidate Date'] }}" />
+            <label class="offer-upload-label" for="offer_{{ loop.index }}">
+              &#8679; {% if a.get('Offer Letter Filename') %}Replace{% else %}Upload{% endif %} Offer Letter
+              <input type="file" class="offer-upload-input" id="offer_{{ loop.index }}"
+                     name="offer_letter" accept=".pdf,.doc,.docx"
+                     onchange="this.closest('form').submit()" />
+            </label>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+  <div class="empty-state">
+    <div style="font-size:36px;">&#128203;</div>
+    <p style="margin-top:12px;">No candidates assigned to this job yet.</p>
+    <p style="margin-top:6px;font-size:13px;">Assign candidates from the <a href="/admin/dashboard" style="color:#2D2D2D;">Candidates dashboard</a>.</p>
+  </div>
+  {% endif %}
+
+</div>
+
+<script>
+  // Show filename in offer upload label
+  document.querySelectorAll(".offer-upload-input").forEach(input => {
+    input.addEventListener("change", function () {
+      const label = this.closest("label");
+      if (this.files[0]) label.textContent = "&#8679; " + this.files[0].name;
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Submissions — Mason Dynamics LTD</title>
+  <link rel="icon" type="image/png" href="/static/favicon.png" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <style>
+    body { background: #F0F4F9; }
+
+    .admin-header {
+      background: #fff;
+      border-bottom: 3px solid #2255CC;
+      padding: 0 12px;
+      margin-bottom: 28px;
+    }
+    .admin-header-inner {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+    }
+    .admin-header img { height: 44px; }
+    .admin-header-right { display: flex; align-items: center; gap: 16px; }
+    .admin-title { font-size: 13px; font-weight: 700; color: #2D2D2D; text-transform: uppercase; letter-spacing: 0.8px; }
+    .btn-logout {
+      background: none; border: 1.5px solid #D8E2EC;
+      border-radius: 7px; padding: 7px 14px;
+      font-size: 12px; font-weight: 600;
+      color: #5A6A7A; cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-logout:hover { border-color: #2D2D2D; color: #2D2D2D; }
+
+    .admin-body { max-width: 1600px; margin: 0 auto; padding: 0 12px 48px; }
+
+    .stats-row { display: flex; gap: 16px; margin-bottom: 24px; }
+    .stat-card {
+      background: #fff; border-radius: 10px;
+      padding: 20px 24px; flex: 1;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    }
+    .stat-label { font-size: 11px; font-weight: 700; color: #7A8A9A; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+    .stat-value { font-size: 28px; font-weight: 800; color: #2D2D2D; }
+
+    .table-card {
+      background: #fff; border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      overflow: hidden;
+    }
+    .table-card-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid #EEF2F6;
+      font-size: 14px; font-weight: 700; color: #2D2D2D;
+    }
+
+    .candidates-table { width: 100%; border-collapse: collapse; }
+    .candidates-table th {
+      background: #F5F8FB;
+      padding: 11px 16px;
+      text-align: left;
+      font-size: 11px; font-weight: 700;
+      color: #5A6A7A; text-transform: uppercase;
+      letter-spacing: 0.6px;
+      border-bottom: 1px solid #EEF2F6;
+      white-space: nowrap;
+    }
+    .candidates-table td {
+      padding: 13px 16px;
+      font-size: 13px; color: #2A3A4A;
+      border-bottom: 1px solid #F0F4F8;
+      vertical-align: top;
+    }
+    .candidates-table tr:last-child td { border-bottom: none; }
+    .candidates-table tr:hover td { background: #FAFBFD; }
+
+    .td-name { font-weight: 700; color: #2D2D2D; }
+    .td-sub  { font-size: 11px; color: #8A9AAA; margin-top: 2px; }
+
+    .badge {
+      display: inline-block; padding: 2px 8px;
+      border-radius: 20px; font-size: 11px; font-weight: 600;
+    }
+    .badge-yes  { background: #E6F4EA; color: #2E7D32; }
+    .badge-no   { background: #FFF3E0; color: #E65100; }
+    .badge-open { background: #E8EDF3; color: #2D2D2D; }
+
+    /* Search & filter bar */
+    .filter-bar {
+      display: flex; gap: 12px; align-items: center;
+      margin-bottom: 16px; flex-wrap: wrap;
+    }
+    .search-input {
+      flex: 1; min-width: 220px; padding: 9px 14px;
+      border: 1.5px solid #D8E2EC; border-radius: 8px;
+      font-size: 13px; color: #1A2332;
+    }
+    .search-input:focus { outline: none; border-color: #2D2D2D; }
+
+    /* Tag management */
+    .tag-bar {
+      background: #fff; border-radius: 10px;
+      padding: 14px 20px; margin-bottom: 16px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    .tag-bar-label { font-size: 11px; font-weight: 700; color: #7A8A9A; text-transform: uppercase; letter-spacing: 0.6px; white-space: nowrap; }
+    .tag-add-form  { display: flex; gap: 6px; align-items: center; }
+    .tag-add-input {
+      padding: 5px 10px; border: 1.5px solid #D8E2EC; border-radius: 6px;
+      font-size: 12px; width: 160px;
+    }
+    .tag-add-input:focus { outline: none; border-color: #2D2D2D; }
+    .tag-add-btn {
+      padding: 5px 12px; background: #2D2D2D; color: #fff;
+      border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+
+    /* Tag chips */
+    .tag-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 8px; border-radius: 6px;
+      font-size: 11px; font-weight: 600;
+      border: 1.5px solid transparent;
+      transition: opacity 0.15s;
+    }
+    .tag-chip .tag-x { font-size: 10px; opacity: 0.6; cursor: pointer; }
+    .tag-chip .tag-x:hover { opacity: 1; }
+    .tag-filter-chip {
+      cursor: pointer; border: 1.5px solid transparent;
+      opacity: 0.7; transition: opacity 0.15s, border-color 0.15s;
+    }
+    .tag-filter-chip:hover, .tag-filter-chip.active { opacity: 1; border-color: currentColor; }
+
+    /* Tag colour palette */
+    .tag-blue   { background:#E3F2FD; color:#1565C0; }
+    .tag-green  { background:#E8F5E9; color:#2E7D32; }
+    .tag-orange { background:#FFF3E0; color:#E65100; }
+    .tag-purple { background:#F3E5F5; color:#6A1B9A; }
+    .tag-red    { background:#FCE4EC; color:#C62828; }
+    .tag-teal   { background:#E0F2F1; color:#00695C; }
+    .tag-yellow { background:#FFF8E1; color:#F57F17; }
+    .tag-indigo { background:#E8EAF6; color:#283593; }
+
+    .dl-link {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; font-weight: 600;
+      color: #2D2D2D; text-decoration: none;
+      padding: 4px 10px;
+      border: 1.5px solid #D8E2EC; border-radius: 6px;
+      transition: border-color 0.15s, background 0.15s;
+      white-space: nowrap; margin: 2px 2px 2px 0;
+    }
+    .dl-link:hover { border-color: #2D2D2D; background: #F5F8FB; }
+
+    .btn-copy {
+      background: none; border: 1.5px solid #D8E2EC;
+      border-radius: 6px; padding: 3px 8px;
+      font-size: 12px; cursor: pointer; color: #2D2D2D;
+      margin-left: 6px;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn-copy:hover { background: #F5F8FB; border-color: #2D2D2D; }
+    .btn-copy.copied { border-color: #2E7D32; color: #2E7D32; background: #E6F4EA; }
+
+    .btn-delete {
+      background: none; border: 1.5px solid #FFCDD2;
+      border-radius: 7px; padding: 5px 12px;
+      font-size: 12px; font-weight: 600;
+      color: #C62828; cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .btn-delete:hover { background: #FFEBEE; border-color: #C62828; }
+
+    .stage-badge {
+      display: inline-block; padding: 2px 8px; border-radius: 20px;
+      font-size: 10px; font-weight: 700;
+    }
+    .stage-blue   { background: #E3F2FD; color: #1565C0; }
+    .stage-orange { background: #FFF3E0; color: #E65100; }
+    .stage-green  { background: #E8F5E9; color: #2E7D32; }
+    .stage-red    { background: #FCE4EC; color: #C62828; }
+    .stage-grey   { background: #ECEFF1; color: #546E7A; }
+
+    .empty-state {
+      text-align: center; padding: 64px 24px;
+      color: #8A9AAA; font-size: 14px;
+    }
+    .empty-state p { margin-top: 8px; }
+  </style>
+</head>
+<body>
+
+  <div class="admin-header">
+    <div class="admin-header-inner">
+      <div style="display:flex;align-items:center;gap:20px;">
+        <img src="/static/logo.png" alt="Mason Dynamics LTD" />
+        <span class="admin-title">Submissions Dashboard</span>
+      </div>
+      <div class="admin-header-right">
+        <a href="/admin/home" class="btn-logout" style="border-color:#2D2D2D;color:#2D2D2D;">&#127968; Home</a>
+        <a href="/admin/jobs" class="btn-logout" style="border-color:#2D2D2D;color:#2D2D2D;">&#128188; Jobs</a>
+        <a href="/admin/clients" class="btn-logout" style="border-color:#2D2D2D;color:#2D2D2D;">&#127970; Clients</a>
+        <a href="/admin/logout" class="btn-logout">Sign Out</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-body">
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Total Candidates</div>
+        <div class="stat-value">{{ candidates | length }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">CVs Uploaded</div>
+        <div class="stat-value">{{ candidates | selectattr('CV Filename') | list | length }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Open to Relocate</div>
+        <div class="stat-value">{{ candidates | selectattr('Open to Relocate', 'equalto', 'Yes') | list | length }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Most Recent</div>
+        <div class="stat-value" style="font-size:15px;padding-top:6px;">
+          {% if candidates %}{{ candidates[0]['Submission Date'] }}{% else %}—{% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Tag management + filter -->
+    <div class="tag-bar">
+      <span class="tag-bar-label">Tags</span>
+      <form method="POST" action="/admin/tags/add" class="tag-add-form">
+        <input type="text" name="tag_name" class="tag-add-input" placeholder="New tag name…" />
+        <button type="submit" class="tag-add-btn">+ Add</button>
+      </form>
+      {% if tags %}
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+        <span class="tag-chip tag-filter-chip tag-{{ 'blue' }}" id="filter-all" onclick="filterByTag(null)" style="background:#E8EDF3;color:#2D2D2D;">All</span>
+        {% for t in tags %}
+        <span class="tag-chip tag-filter-chip tag-{{ t['Colour'] }}" onclick="filterByTag('{{ t['Tag Name'] }}')">
+          {{ t['Tag Name'] }}
+        </span>
+        <form method="POST" action="/admin/tags/delete/{{ t['Tag ID'] }}" style="display:inline;" onsubmit="return confirm('Delete tag {{ t['Tag Name'] }}?')">
+          <button type="submit" style="background:none;border:none;font-size:10px;color:#B0BEC8;cursor:pointer;padding:0 2px;" title="Delete tag">✕</button>
+        </form>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Search bar -->
+    <div class="filter-bar">
+      <input type="text" class="search-input" id="candidateSearch" placeholder="🔍  Search by name, email, job title, company…" oninput="filterCandidates()" />
+    </div>
+
+    <!-- Table -->
+    <div class="table-card">
+      <div class="table-card-header">All Submissions (most recent first)</div>
+
+      {% if candidates %}
+      <div style="overflow-x:auto;">
+        <table class="candidates-table">
+          <thead>
+            <tr>
+              <th>Candidate</th>
+              <th>Tags</th>
+              <th>Assigned Job</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Current Role</th>
+              <th>Salary</th>
+              <th>Downloads</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in candidates %}
+            {% set c_tag_names = tags_by_candidate.get(c.get('Submission Date'), []) %}
+            <tr class="candidate-row"
+                data-search="{{ c.get('Full Name','') }} {{ c.get('Email','') }} {{ c.get('Current Job Title','') }} {{ c.get('Current Company','') }} {{ c.get('Location','') }}"
+                data-tags="{{ c_tag_names | join(',') }}"
+                data-href="/admin/candidate/{{ c['Submission Date'] | urlquote }}"
+                style="cursor:pointer;"
+                >
+              <td>
+                <div class="td-name">{{ c.get('Full Name', '—') }}</div>
+                <div class="td-sub">{{ c.get('Location', '') }}</div>
+                {% if c.get('LinkedIn URL') %}
+                <div class="td-sub"><a href="{{ c['LinkedIn URL'] }}" target="_blank" style="color:#2D2D2D;">LinkedIn ↗</a></div>
+                {% endif %}
+              </td>
+              <td style="min-width:180px;">
+                {% set tag_colour_map = {} %}
+                {% for t in tags %}{% set _ = tag_colour_map.update({t['Tag Name']: t['Colour']}) %}{% endfor %}
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:{% if c_tag_names %}6{% else %}0{% endif %}px;">
+                  {% for tn in c_tag_names %}
+                  <span class="tag-chip tag-{{ tag_colour_map.get(tn, 'blue') }}" style="justify-content:space-between;width:100%;box-sizing:border-box;">
+                    <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ tn }}</span>
+                    <form method="POST" action="/admin/candidates/untag" style="display:inline;flex-shrink:0;">
+                      <input type="hidden" name="candidate_date" value="{{ c['Submission Date'] }}" />
+                      <input type="hidden" name="tag_name" value="{{ tn }}" />
+                      <button type="submit" class="tag-x" title="Remove tag">✕</button>
+                    </form>
+                  </span>
+                  {% endfor %}
+                </div>
+                {% if tags %}
+                <form method="POST" action="/admin/candidates/tag" style="display:flex;gap:4px;margin-top:2px;">
+                  <input type="hidden" name="candidate_date" value="{{ c['Submission Date'] }}" />
+                  <select name="tag_name" style="font-size:11px;padding:2px 6px;border:1.5px solid #D8E2EC;border-radius:6px;flex:1;min-width:0;">
+                    <option value="">+ Add tag</option>
+                    {% for t in tags %}{% if t['Tag Name'] not in c_tag_names %}
+                    <option value="{{ t['Tag Name'] }}">{{ t['Tag Name'] }}</option>
+                    {% endif %}{% endfor %}
+                  </select>
+                  <button type="submit" style="font-size:11px;padding:2px 8px;background:#2D2D2D;color:#fff;border:none;border-radius:6px;cursor:pointer;flex-shrink:0;">+</button>
+                </form>
+                {% endif %}
+              </td>
+              <td style="min-width:180px;">
+                {% set c_jobs = assigned_jobs.get(c.get('Submission Date'), []) %}
+                {% for aj in c_jobs %}
+                  {% for j in jobs %}
+                    {% if j['Job ID'] == aj['Job ID'] %}
+                    <div style="margin-bottom:6px;">
+                      <div style="font-size:12px;font-weight:700;color:#2D2D2D;">{{ j['Job Title'] }} — {{ j['Company Name'] }}
+                        <form method="POST" action="/admin/unassign" style="display:inline;">
+                          <input type="hidden" name="job_id" value="{{ j['Job ID'] }}" />
+                          <input type="hidden" name="candidate_date" value="{{ c['Submission Date'] }}" />
+                          <button type="submit" style="background:none;border:none;color:#C62828;cursor:pointer;font-size:11px;padding:0 4px;" title="Remove">✕</button>
+                        </form>
+                      </div>
+                      {% set stage = aj.get('Stage', '') %}
+                      {% if stage %}
+                        {% set col = stage_colours.get(stage, 'grey') %}
+                        <span class="stage-badge stage-{{ col }}" style="font-size:10px;padding:2px 8px;margin-top:3px;display:inline-block;">{{ stage }}</span>
+                      {% else %}
+                        <span style="font-size:10px;color:#B0BEC8;">No stage set</span>
+                      {% endif %}
+                    </div>
+                    {% endif %}
+                  {% endfor %}
+                {% endfor %}
+                {% if jobs %}
+                <form method="POST" action="/admin/assign" style="display:flex;gap:4px;margin-top:4px;">
+                  <input type="hidden" name="candidate_date" value="{{ c['Submission Date'] }}" />
+                  <input type="hidden" name="candidate_name" value="{{ c['Full Name'] }}" />
+                  <select name="job_id" style="font-size:11px;padding:3px 6px;border:1.5px solid #D8E2EC;border-radius:6px;flex:1;">
+                    <option value="">— Assign to job —</option>
+                    {% for j in jobs %}
+                    <option value="{{ j['Job ID'] }}">{{ j['Job Title'] }} — {{ j['Company Name'] }}</option>
+                    {% endfor %}
+                  </select>
+                  <button type="submit" style="font-size:11px;padding:3px 10px;background:#2D2D2D;color:#fff;border:none;border-radius:6px;cursor:pointer;">+</button>
+                </form>
+                {% endif %}
+              </td>
+              <td style="white-space:nowrap;">
+                {% if c.get('Email') %}
+                <span style="font-size:13px;">{{ c['Email'] }}</span>
+                <button class="btn-copy" onclick="copyEmail(this, '{{ c['Email'] }}')" title="Copy email">&#9003;</button>
+                {% else %}—{% endif %}
+              </td>
+              <td style="white-space:nowrap;">
+                {% if c.get('Phone') %}
+                <span style="font-size:13px;">{{ c['Phone'] }}</span>
+                <button class="btn-copy" onclick="copyEmail(this, '{{ c['Phone'] }}')" title="Copy number">&#9003;</button>
+                {% else %}—{% endif %}
+              </td>
+              <td>
+                <div>{{ c.get('Current Job Title', '—') }}</div>
+                <div class="td-sub">{{ c.get('Current Company', '') }}</div>
+              </td>
+              <td>
+                <div>{{ c.get('Current Base Salary', '—') }}</div>
+                {% if c.get('On Target Earnings') and c['On Target Earnings'] != '—' %}
+                <div class="td-sub">OTE: {{ c['On Target Earnings'] }}</div>
+                {% endif %}
+              </td>
+              <td>
+                {% if c.get('Word Doc') %}
+                <a href="/admin/download/doc/{{ c['Word Doc'] }}" class="dl-link">&#128196; Front Sheet</a>
+                {% endif %}
+                {% if c.get('CV Filename') %}
+                <a href="/admin/download/cv/{{ c['CV Filename'] }}" class="dl-link">&#128196; CV</a>
+                {% endif %}
+                {% if not c.get('Word Doc') and not c.get('CV Filename') %}
+                <span style="color:#B0BEC8;font-size:12px;">—</span>
+                {% endif %}
+              </td>
+              <td>
+                <form method="POST" action="/admin/delete/{{ c['Submission Date'] | urlencode }}"
+                      onsubmit="return confirm('Permanently delete {{ c.get('Full Name', 'this candidate') }}? This cannot be undone.')">
+                  <button type="submit" class="btn-delete">Delete</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      {% else %}
+      <div class="empty-state">
+        <div style="font-size:36px;">📋</div>
+        <p>No submissions yet. Share the candidate form to get started.</p>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+
+  <script>
+    // Row click → candidate detail
+    document.querySelectorAll(".candidate-row[data-href]").forEach(row => {
+      row.addEventListener("click", function (e) {
+        if (e.target.closest("a,button,form,select,input")) return;
+        window.location.href = this.dataset.href;
+      });
+    });
+
+    let activeTagFilter = null;
+
+    function filterCandidates() {
+      const q = document.getElementById("candidateSearch").value.toLowerCase();
+      document.querySelectorAll(".candidate-row").forEach(row => {
+        const searchText = (row.dataset.search || "").toLowerCase();
+        const rowTags = (row.dataset.tags || "").split(",").map(t => t.trim().toLowerCase());
+        const matchSearch = !q || searchText.includes(q);
+        const matchTag = !activeTagFilter || rowTags.includes(activeTagFilter.toLowerCase());
+        row.style.display = matchSearch && matchTag ? "" : "none";
+      });
+    }
+
+    function filterByTag(tag) {
+      activeTagFilter = tag;
+      document.querySelectorAll(".tag-filter-chip").forEach(chip => chip.classList.remove("active"));
+      if (tag) {
+        document.querySelectorAll(".tag-filter-chip").forEach(chip => {
+          if (chip.textContent.trim() === tag) chip.classList.add("active");
+        });
+      } else {
+        document.getElementById("filter-all").classList.add("active");
+      }
+      filterCandidates();
+    }
+
+    function copyEmail(btn, email) {
+      navigator.clipboard.writeText(email).then(() => {
+        btn.classList.add("copied");
+        btn.textContent = "✓";
+        setTimeout(() => {
+          btn.classList.remove("copied");
+          btn.innerHTML = "⌫";
+          btn.innerHTML = "&#9003;";
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clients — Mason Dynamics LTD</title>
+  <link rel="icon" type="image/png" href="/static/favicon.png" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <style>
+    body { background: #F0F4F9; }
+
+    .admin-header {
+      background: #fff;
+      border-bottom: 3px solid #2255CC;
+      padding: 0 32px;
+      margin-bottom: 28px;
+    }
+    .admin-header-inner {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+    }
+    .admin-header img { height: 44px; }
+    .admin-header-right { display: flex; align-items: center; gap: 16px; }
+    .admin-title { font-size: 13px; font-weight: 700; color: #2D2D2D; text-transform: uppercase; letter-spacing: 0.8px; }
+    .btn-nav {
+      background: none; border: 1.5px solid #D8E2EC;
+      border-radius: 7px; padding: 7px 14px;
+      font-size: 12px; font-weight: 600;
+      color: #5A6A7A; cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-nav:hover { border-color: #2D2D2D; color: #2D2D2D; }
+    .btn-nav-active { border-color: #2D2D2D; color: #2D2D2D; }
+
+    .admin-body { max-width: 1200px; margin: 0 auto; padding: 0 24px 48px; }
+
+    .two-col-layout { display: grid; grid-template-columns: 360px 1fr; gap: 24px; align-items: start; }
+
+    .table-card {
+      background: #fff; border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      overflow: hidden;
+    }
+    .table-card-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid #EEF2F6;
+      font-size: 14px; font-weight: 700; color: #2D2D2D;
+    }
+
+    .add-form { padding: 20px 24px; }
+    .form-field { margin-bottom: 14px; }
+    .form-field label {
+      display: block; font-size: 12px; font-weight: 700;
+      color: #4A5A6A; text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 5px;
+    }
+    .form-field input, .form-field select {
+      width: 100%; padding: 9px 12px;
+      border: 1.5px solid #D8E2EC; border-radius: 7px;
+      font-size: 13px; color: #1A2332; background: #fff;
+    }
+    .form-field input:focus { outline: none; border-color: #2D2D2D; }
+    .form-field .field-hint { font-size: 11px; color: #8A9AAA; margin-top: 4px; }
+
+    .upload-zone-sm {
+      border: 2px dashed #D8E2EC; border-radius: 8px;
+      padding: 16px; text-align: center;
+      cursor: pointer; transition: border-color 0.15s;
+      position: relative;
+    }
+    .upload-zone-sm:hover { border-color: #2D2D2D; }
+    .upload-zone-sm input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%;
+    }
+    .upload-zone-sm p { font-size: 12px; color: #7A8A9A; margin: 0; }
+
+    .btn-submit-form {
+      width: 100%; padding: 11px;
+      background: #2D2D2D; color: #fff;
+      border: none; border-radius: 8px;
+      font-size: 14px; font-weight: 700;
+      cursor: pointer; margin-top: 4px;
+      transition: background 0.15s;
+    }
+    .btn-submit-form:hover { background: #1a1a1a; }
+
+    .clients-table { width: 100%; border-collapse: collapse; }
+    .clients-table th {
+      background: #F5F8FB; padding: 11px 16px;
+      text-align: left; font-size: 11px; font-weight: 700;
+      color: #5A6A7A; text-transform: uppercase; letter-spacing: 0.6px;
+      border-bottom: 1px solid #EEF2F6; white-space: nowrap;
+    }
+    .clients-table td {
+      padding: 13px 16px; font-size: 13px; color: #2A3A4A;
+      border-bottom: 1px solid #F0F4F8; vertical-align: top;
+    }
+    .clients-table tr:last-child td { border-bottom: none; }
+    .clients-table tr:hover td { background: #FAFBFD; }
+
+    .td-name { font-weight: 700; color: #2D2D2D; }
+    .td-sub  { font-size: 11px; color: #8A9AAA; margin-top: 2px; }
+
+    .fee-badge {
+      display: inline-block; background: #E8EDF3; color: #2D2D2D;
+      border-radius: 20px; padding: 3px 10px;
+      font-size: 12px; font-weight: 700;
+    }
+
+    .dl-link {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; font-weight: 600;
+      color: #2D2D2D; text-decoration: none;
+      padding: 4px 10px;
+      border: 1.5px solid #D8E2EC; border-radius: 6px;
+      transition: border-color 0.15s, background 0.15s;
+      white-space: nowrap;
+    }
+    .dl-link:hover { border-color: #2D2D2D; background: #F5F8FB; }
+
+    .btn-delete {
+      background: none; border: 1.5px solid #FFCDD2;
+      border-radius: 7px; padding: 5px 12px;
+      font-size: 12px; font-weight: 600;
+      color: #C62828; cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn-delete:hover { background: #FFEBEE; border-color: #C62828; }
+
+    .empty-state {
+      text-align: center; padding: 48px 24px;
+      color: #8A9AAA; font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-header">
+    <div class="admin-header-inner">
+      <div style="display:flex;align-items:center;gap:20px;">
+        <img src="/static/logo.png" alt="Mason Dynamics LTD" />
+        <span class="admin-title">Clients</span>
+      </div>
+      <div class="admin-header-right">
+        <a href="/admin/home" class="btn-nav">&#127968; Home</a>
+        <a href="/admin/dashboard" class="btn-nav">&#128101; Candidates</a>
+        <a href="/admin/jobs" class="btn-nav">&#128188; Jobs</a>
+        <a href="/admin/logout" class="btn-nav">Sign Out</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-body">
+    <div class="two-col-layout">
+
+      <!-- Add Client form -->
+      <div class="table-card">
+        <div class="table-card-header">Add New Client</div>
+        <form method="POST" action="/admin/clients/add" enctype="multipart/form-data" class="add-form">
+          <div class="form-field">
+            <label>Client Name *</label>
+            <input type="text" name="client_name" placeholder="e.g. Acme Corp" required />
+          </div>
+          <div class="form-field">
+            <label>Contact Name *</label>
+            <input type="text" name="contact_name" placeholder="e.g. Sarah Jones" required />
+          </div>
+          <div class="form-field">
+            <label>Fee % *</label>
+            <input type="text" name="fee_percentage" placeholder="e.g. 15" required />
+            <p class="field-hint">Enter the percentage fee agreed with this client</p>
+          </div>
+          <div class="form-field">
+            <label>Signed Terms Document</label>
+            <div class="upload-zone-sm">
+              <input type="file" name="terms_file" accept=".pdf,.doc,.docx" id="termsFile" />
+              <p id="termsLabel">&#8679; Upload PDF or Word document</p>
+            </div>
+          </div>
+          <button type="submit" class="btn-submit-form">+ Add Client</button>
+        </form>
+      </div>
+
+      <!-- Clients list -->
+      <div class="table-card">
+        <div class="table-card-header">All Clients ({{ clients | length }})</div>
+
+        {% if clients %}
+        <div style="overflow-x:auto;">
+          <table class="clients-table">
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Contact</th>
+                <th>Fee %</th>
+                <th>Terms</th>
+                <th>Added</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for c in clients %}
+              <tr>
+                <td><div class="td-name">{{ c['Client Name'] }}</div></td>
+                <td>{{ c.get('Contact Name', '—') }}</td>
+                <td>
+                  {% if c.get('Fee Percentage') %}
+                  <span class="fee-badge">{{ c['Fee Percentage'] }}%</span>
+                  {% else %}—{% endif %}
+                </td>
+                <td>
+                  {% if c.get('Terms Filename') %}
+                  <a href="/admin/clients/terms/{{ c['Terms Filename'] }}" class="dl-link">&#128196; Download</a>
+                  {% else %}
+                  <span style="color:#B0BEC8;font-size:12px;">Not uploaded</span>
+                  {% endif %}
+                </td>
+                <td style="white-space:nowrap;" class="td-sub">{{ c.get('Date Added', '—') }}</td>
+                <td>
+                  <form method="POST" action="/admin/clients/delete/{{ c['Client ID'] }}"
+                        onsubmit="return confirm('Delete {{ c['Client Name'] }}? This cannot be undone.')">
+                    <button type="submit" class="btn-delete">Delete</button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+          <div style="font-size:36px;">🏢</div>
+          <p>No clients yet. Add your first client using the form.</p>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("termsFile").addEventListener("change", function () {
+      document.getElementById("termsLabel").textContent = this.files[0]
+        ? "&#128196; " + this.files[0].name
+        : "&#8679; Upload PDF or Word document";
+    });
+  </script>
+
+</body>
+</html>

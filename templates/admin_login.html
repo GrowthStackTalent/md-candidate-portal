@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Mason Dynamics LTD</title>
+  <link rel="icon" type="image/png" href="/static/favicon.png" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <style>
+    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #F0F4F9; }
+    .login-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .login-logo { height: 48px; margin-bottom: 28px; }
+    .login-title { font-size: 18px; font-weight: 700; color: #2D2D2D; margin-bottom: 6px; }
+    .login-sub   { font-size: 13px; color: #7A8A9A; margin-bottom: 28px; }
+    .login-card .field { text-align: left; margin-bottom: 20px; }
+    .login-card label { font-size: 12px; font-weight: 600; color: #4A5A6A; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
+    .login-card input[type="password"] {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid #D8E2EC; border-radius: 7px;
+      font-size: 14px; outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .login-card input:focus { border-color: #2D2D2D; box-shadow: 0 0 0 3px rgba(27,58,92,0.1); }
+    .login-btn {
+      width: 100%; padding: 12px;
+      background: #2D2D2D; color: #fff;
+      border: none; border-radius: 8px;
+      font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .login-btn:hover { background: #254F80; }
+    .login-error {
+      background: #FEF0F0; border: 1px solid #F5C0C0;
+      color: #C0392B; border-radius: 7px;
+      padding: 10px 14px; font-size: 13px;
+      margin-bottom: 20px; text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-card">
+    <img src="/static/logo.png" alt="Mason Dynamics LTD" class="login-logo" />
+    <p class="login-title">Admin Portal</p>
+    <p class="login-sub">Submissions &amp; Candidate Management</p>
+
+    {% if error %}
+    <div class="login-error">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST">
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" autofocus required />
+      </div>
+      <button type="submit" class="login-btn">Sign In</button>
+    </form>
+  </div>
+</body>
+</html>

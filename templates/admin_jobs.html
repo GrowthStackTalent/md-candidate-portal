@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jobs — Mason Dynamics LTD</title>
+  <link rel="icon" type="image/png" href="/static/favicon.png" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <style>
+    body { background: #F0F4F9; }
+
+    .admin-header {
+      background: #fff;
+      border-bottom: 3px solid #2255CC;
+      padding: 0 32px;
+      margin-bottom: 28px;
+    }
+    .admin-header-inner {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+    }
+    .admin-header img { height: 44px; }
+    .admin-header-right { display: flex; align-items: center; gap: 12px; }
+    .admin-title { font-size: 13px; font-weight: 700; color: #2D2D2D; text-transform: uppercase; letter-spacing: 0.8px; }
+    .btn-nav {
+      background: none; border: 1.5px solid #D8E2EC;
+      border-radius: 7px; padding: 7px 14px;
+      font-size: 12px; font-weight: 600; color: #5A6A7A;
+      cursor: pointer; text-decoration: none;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-nav:hover { border-color: #2D2D2D; color: #2D2D2D; }
+
+    .admin-body { max-width: 1400px; margin: 0 auto; padding: 0 24px 60px; }
+
+    .two-col-layout { display: grid; grid-template-columns: 360px 1fr; gap: 24px; align-items: start; }
+
+    /* Add Job form */
+    .form-card {
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      overflow: hidden; position: sticky; top: 20px;
+    }
+    .form-card-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid #EEF2F6;
+      font-size: 14px; font-weight: 700; color: #2D2D2D;
+    }
+    .add-job-form { padding: 20px 24px; }
+    .form-field { margin-bottom: 14px; }
+    .form-field label {
+      display: block; font-size: 11px; font-weight: 700;
+      color: #4A5A6A; text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 5px;
+    }
+    .form-field input, .form-field select, .form-field textarea {
+      width: 100%; padding: 9px 12px;
+      border: 1.5px solid #D8E2EC; border-radius: 7px;
+      font-size: 13px; color: #1A2332; background: #fff;
+      box-sizing: border-box; font-family: inherit;
+    }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+      outline: none; border-color: #2D2D2D;
+    }
+    .btn-add-job {
+      width: 100%; padding: 11px;
+      background: #2D2D2D; color: #fff;
+      border: none; border-radius: 8px;
+      font-size: 14px; font-weight: 700;
+      cursor: pointer; margin-top: 4px;
+    }
+    .btn-add-job:hover { background: #1a1a1a; }
+
+    /* Job tiles */
+    .jobs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .job-tile {
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      padding: 22px 24px;
+      display: flex; flex-direction: column; gap: 12px;
+      cursor: pointer; text-decoration: none; color: inherit;
+      border: 2px solid transparent;
+      transition: box-shadow 0.15s, border-color 0.15s, transform 0.12s;
+      position: relative;
+    }
+    .job-tile:hover { box-shadow: 0 6px 20px rgba(27,58,92,0.12); border-color: #2D2D2D; transform: translateY(-2px); }
+
+    .job-tile-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .job-tile-title { font-size: 15px; font-weight: 800; color: #2D2D2D; line-height: 1.3; }
+    .job-tile-client { font-size: 12px; color: #5A6A7A; margin-top: 3px; font-weight: 600; }
+    .job-tile-location { font-size: 11px; color: #9AABB8; margin-top: 2px; }
+
+    .status-badge {
+      display: inline-block; padding: 3px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 700; white-space: nowrap; flex-shrink: 0;
+    }
+    .status-open   { background: #E6F4EA; color: #2E7D32; }
+    .status-filled { background: #E3F2FD; color: #1565C0; }
+    .status-closed { background: #FFF3E0; color: #E65100; }
+    .status-hold   { background: #F3E5F5; color: #6A1B9A; }
+
+    .job-tile-meta {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      font-size: 12px; color: #5A6A7A;
+      border-top: 1px solid #F0F4F8; padding-top: 12px;
+    }
+    .job-tile-meta-item { display: flex; align-items: center; gap: 5px; }
+    .job-tile-meta-icon { font-size: 13px; }
+
+    .cand-count {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: #E8EDF3; color: #2D2D2D;
+      border-radius: 20px; padding: 2px 10px;
+      font-size: 11px; font-weight: 700;
+    }
+
+    .job-tile-salary {
+      font-size: 13px; font-weight: 700; color: #2D2D2D;
+    }
+
+    .empty-state {
+      text-align: center; padding: 64px 24px;
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      color: #8A9AAA;
+    }
+
+    .dl-link {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; font-weight: 600;
+      color: #2D2D2D; text-decoration: none;
+      padding: 4px 10px;
+      border: 1.5px solid #D8E2EC; border-radius: 6px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .dl-link:hover { border-color: #2D2D2D; background: #F5F8FB; }
+  </style>
+</head>
+<body>
+
+<div class="admin-header">
+  <div class="admin-header-inner">
+    <div style="display:flex;align-items:center;gap:20px;">
+      <img src="/static/logo.png" alt="Mason Dynamics LTD" />
+      <span class="admin-title">Jobs</span>
+    </div>
+    <div class="admin-header-right">
+      <a href="/admin/home"      class="btn-nav" style="border-color:#2D2D2D;color:#2D2D2D;">&#127968; Home</a>
+      <a href="/admin/dashboard" class="btn-nav" style="border-color:#2D2D2D;color:#2D2D2D;">&#128101; Candidates</a>
+      <a href="/admin/clients"   class="btn-nav" style="border-color:#2D2D2D;color:#2D2D2D;">&#127970; Clients</a>
+      <a href="/admin/logout"    class="btn-nav">Sign Out</a>
+    </div>
+  </div>
+</div>
+
+<div class="admin-body">
+  <div class="two-col-layout">
+
+    <!-- Add Job form -->
+    <div class="form-card">
+      <div class="form-card-header">+ Add New Job</div>
+      <form method="POST" action="/admin/jobs/add" class="add-job-form">
+        <div class="form-field">
+          <label>Client *</label>
+          <select name="company_name" required>
+            <option value="">— Select client —</option>
+            {% for c in clients %}
+            <option value="{{ c['Client Name'] }}">{{ c['Client Name'] }}</option>
+            {% endfor %}
+          </select>
+          {% if not clients %}
+          <p style="font-size:11px;color:#E65100;margin-top:4px;">No clients yet — <a href="/admin/clients" style="color:#E65100;">add a client first</a>.</p>
+          {% endif %}
+        </div>
+        <div class="form-field">
+          <label>Job Title *</label>
+          <input type="text" name="job_title" placeholder="e.g. Senior Account Executive" required />
+        </div>
+        <div class="form-field">
+          <label>Country</label>
+          <select name="country">
+            <option value="">— Select country —</option>
+            <option>Afghanistan</option><option>Albania</option><option>Algeria</option><option>Andorra</option><option>Angola</option><option>Argentina</option><option>Armenia</option><option>Australia</option><option>Austria</option><option>Azerbaijan</option>
+            <option>Bahrain</option><option>Bangladesh</option><option>Belarus</option><option>Belgium</option><option>Bolivia</option><option>Bosnia and Herzegovina</option><option>Brazil</option><option>Bulgaria</option>
+            <option>Cambodia</option><option>Cameroon</option><option>Canada</option><option>Chile</option><option>China</option><option>Colombia</option><option>Costa Rica</option><option>Croatia</option><option>Czech Republic</option>
+            <option>Denmark</option><option>Dominican Republic</option>
+            <option>Ecuador</option><option>Egypt</option><option>Estonia</option><option>Ethiopia</option>
+            <option>Finland</option><option>France</option>
+            <option>Georgia</option><option>Germany</option><option>Ghana</option><option>Greece</option><option>Guatemala</option>
+            <option>Honduras</option><option>Hong Kong</option><option>Hungary</option>
+            <option>Iceland</option><option>India</option><option>Indonesia</option><option>Ireland</option><option>Israel</option><option>Italy</option>
+            <option>Japan</option><option>Jordan</option>
+            <option>Kazakhstan</option><option>Kenya</option><option>Kuwait</option>
+            <option>Latvia</option><option>Lebanon</option><option>Lithuania</option><option>Luxembourg</option>
+            <option>Malaysia</option><option>Malta</option><option>Mexico</option><option>Morocco</option>
+            <option>Netherlands</option><option>New Zealand</option><option>Nigeria</option><option>Norway</option>
+            <option>Oman</option>
+            <option>Pakistan</option><option>Panama</option><option>Peru</option><option>Philippines</option><option>Poland</option><option>Portugal</option>
+            <option>Qatar</option>
+            <option>Romania</option><option>Russia</option>
+            <option>Saudi Arabia</option><option>Serbia</option><option>Singapore</option><option>Slovakia</option><option>Slovenia</option><option>South Africa</option><option>South Korea</option><option>Spain</option><option>Sri Lanka</option><option>Sweden</option><option>Switzerland</option>
+            <option>Taiwan</option><option>Thailand</option><option>Tunisia</option><option>Turkey</option>
+            <option>Ukraine</option><option>United Arab Emirates</option><option>United Kingdom</option><option>United States</option><option>Uruguay</option><option>Uzbekistan</option>
+            <option>Venezuela</option><option>Vietnam</option>
+            <option>Zimbabwe</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>City</label>
+          <input type="text" name="city" placeholder="e.g. London" />
+        </div>
+        <div class="form-field">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;text-transform:none;letter-spacing:0;font-weight:600;font-size:13px;">
+            <input type="checkbox" name="is_remote" value="yes" style="width:16px;height:16px;" />
+            Remote role
+          </label>
+        </div>
+        <div class="form-field">
+          <label>Salary Currency</label>
+          <select name="currency">
+            <option value="GBP">GBP — £ British Pound</option>
+            <option value="USD" selected>USD — $ US Dollar</option>
+            <option value="EUR">EUR — € Euro</option>
+            <option value="CAD">CAD — CA$ Canadian Dollar</option>
+            <option value="AUD">AUD — A$ Australian Dollar</option>
+            <option value="CHF">CHF — Swiss Franc</option>
+            <option value="JPY">JPY — ¥ Japanese Yen</option>
+            <option value="SGD">SGD — S$ Singapore Dollar</option>
+            <option value="HKD">HKD — HK$ Hong Kong Dollar</option>
+            <option value="AED">AED — UAE Dirham</option>
+            <option value="INR">INR — ₹ Indian Rupee</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Salary Band</label>
+          <input type="text" name="salary_band" placeholder="e.g. 80,000 – 100,000" />
+        </div>
+        <div class="form-field">
+          <label>Contact Person</label>
+          <input type="text" name="contact_person" placeholder="e.g. Sarah Jones, HR Director" />
+        </div>
+        <div class="form-field">
+          <label>Role Assigned To</label>
+          <input type="text" name="assigned_to" placeholder="e.g. Joel Mason" />
+        </div>
+        <div class="form-field">
+          <label>Job Description</label>
+          <textarea name="description" rows="3" placeholder="Brief role overview…" style="resize:vertical;"></textarea>
+        </div>
+        <div class="form-field">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;text-transform:none;letter-spacing:0;font-weight:600;font-size:13px;">
+            <input type="checkbox" name="show_on_website" value="yes" style="width:16px;height:16px;" checked />
+            Show on public jobs board
+          </label>
+        </div>
+        <button type="submit" class="btn-add-job">+ Add Job</button>
+      </form>
+    </div>
+
+    <!-- Jobs tile grid -->
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:#7A8A9A;">{{ jobs | length }} Role{% if jobs | length != 1 %}s{% endif %}</div>
+      </div>
+
+      {% if jobs %}
+      <div class="jobs-grid">
+        {% for j in jobs %}
+        {% set s = j.get('Status', 'Open') %}
+        {% set status_cls = {'Open':'status-open','Successfully filled':'status-filled','Closed unsuccessfully':'status-closed','On hold':'status-hold'}.get(s, 'status-open') %}
+        {% set linked = assignments_by_job.get(j['Job ID'], []) %}
+        <a href="/admin/jobs/{{ j['Job ID'] }}" class="job-tile">
+          <div class="job-tile-top">
+            <div>
+              <div class="job-tile-title">{{ j['Job Title'] }}</div>
+              <div class="job-tile-client">{{ j['Company Name'] }}</div>
+              {% if j.get('Location') %}
+              <div class="job-tile-location">📍 {{ j['Location'] }}</div>
+              {% endif %}
+            </div>
+            <span class="status-badge {{ status_cls }}">{{ s }}</span>
+          </div>
+
+          {% if j.get('Salary Band') %}
+          <div class="job-tile-salary">💰 {{ j['Salary Band'] }}</div>
+          {% endif %}
+
+          <div class="job-tile-meta">
+            <div class="job-tile-meta-item">
+              <span class="job-tile-meta-icon">👥</span>
+              <span class="cand-count">{{ linked | length }} candidate{% if linked | length != 1 %}s{% endif %}</span>
+            </div>
+            {% if j.get('Assigned To') %}
+            <div class="job-tile-meta-item">
+              <span class="job-tile-meta-icon">🎯</span>
+              <span>{{ j['Assigned To'] }}</span>
+            </div>
+            {% endif %}
+            {% if j.get('Expected Start Date') %}
+            <div class="job-tile-meta-item">
+              <span class="job-tile-meta-icon">📅</span>
+              <span>Start: {{ j['Expected Start Date'] }}</span>
+            </div>
+            {% endif %}
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+
+      {% else %}
+      <div class="empty-state">
+        <div style="font-size:36px;">📋</div>
+        <p style="margin-top:12px;">No jobs added yet. Use the form to add your first role.</p>
+      </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
