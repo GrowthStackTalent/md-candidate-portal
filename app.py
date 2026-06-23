@@ -1176,6 +1176,150 @@ def admin_download_offer_letter(filename):
     return send_from_directory(OFFER_LETTERS_DIR, filename, as_attachment=True)
 
 
+# ── Claude MCP API ─────────────────────────────────────────────────────────────
+
+def api_key_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        key = request.headers.get("Authorization", "").replace("Bearer ", "").strip()
+        expected = os.environ.get("MD_API_KEY", "")
+        if not expected or key != expected:
+            return jsonify({"error": "Unauthorized"}), 401
+        return f(*args, **kwargs)
+    return decorated
+
+
+@app.route("/api/candidates")
+@api_key_required
+def api_candidates():
+    candidates = read_csv(CSV_PATH, CSV_HEADERS)
+    assignments = read_csv(ASSIGNMENTS_PATH, ASSIGNMENTS_HEADERS)
+    tags_map = {}
+    for ct in read_csv(CANDIDATE_TAGS_PATH, CANDIDATE_TAGS_HEADERS):
+        tags_map.setdefault(ct["Candidate Date"], []).append(ct["Tag Name"])
+    stage_map = {}
+    for a in assignments:
+        stage_map.setdefault(a["Candidate Date"], []).append({
+            "job_id": a["Job ID"], "stage": a["Stage"]
+        })
+    result = []
+    for c in candidates:
+        result.append({
+            "id": c["Submission Date"],
+            "name": c["Full Name"],
+            "email": c["Email"],
+            "phone": c.get("Phone", ""),
+            "location": c.get("Location", ""),
+            "current_role": c.get("Current Job Title", ""),
+            "current_company": c.get("Current Company", ""),
+            "salary": c.get("Current Base Salary", ""),
+            "ote": c.get("On Target Earnings", ""),
+            "notice_period": c.get("Notice Period", ""),
+            "linkedin": c.get("LinkedIn URL", ""),
+            "languages": c.get("Languages", ""),
+            "education": c.get("Education", ""),
+            "open_to_relocate": c.get("Open to Relocate", ""),
+            "tags": tags_map.get(c["Submission Date"], []),
+            "pipeline": stage_map.get(c["Submission Date"], []),
+            "submitted": c["Submission Date"],
+        })
+    return jsonify(result)
+
+
+@app.route("/api/candidates/<path:candidate_date>")
+@api_key_required
+def api_candidate_detail(candidate_date):
+    candidates = read_csv(CSV_PATH, CSV_HEADERS)
+    assignments = read_csv(ASSIGNMENTS_PATH, ASSIGNMENTS_HEADERS)
+    jobs = read_csv(JOBS_PATH, JOBS_HEADERS)
+    jobs_map = {j["Job ID"]: j for j in jobs}
+    c = next((x for x in candidates if x["Submission Date"] == candidate_date), None)
+    if not c:
+        return jsonify({"error": "Not found"}), 404
+    pipeline = []
+    for a in assignments:
+        if a["Candidate Date"] == candidate_date:
+            job = jobs_map.get(a["Job ID"], {})
+            pipeline.append({
+                "job_id": a["Job ID"],
+                "job_title": job.get("Job Title", ""),
+                "company": job.get("Company Name", ""),
+                "stage": a["Stage"],
+            })
+    return jsonify({**c, "pipeline": pipeline})
+
+
+@app.route("/api/jobs")
+@api_key_required
+def api_jobs():
+    jobs = read_csv(JOBS_PATH, JOBS_HEADERS)
+    assignments = read_csv(ASSIGNMENTS_PATH, ASSIGNMENTS_HEADERS)
+    counts = {}
+    for a in assignments:
+        counts[a["Job ID"]] = counts.get(a["Job ID"], 0) + 1
+    result = []
+    for j in jobs:
+        result.append({
+            "id": j["Job ID"],
+            "title": j["Job Title"],
+            "company": j["Company Name"],
+            "location": j.get("Location", ""),
+            "salary_band": j.get("Salary Band", ""),
+            "currency": j.get("Currency", "GBP"),
+            "status": j.get("Status", "Open"),
+            "assigned_to": j.get("Assigned To", ""),
+            "candidate_count": counts.get(j["Job ID"], 0),
+            "expected_start": j.get("Expected Start Date", ""),
+            "expected_invoice": j.get("Expected Invoice Date", ""),
+        })
+    return jsonify(result)
+
+
+@app.route("/api/jobs/<job_id>")
+@api_key_required
+def api_job_detail(job_id):
+    jobs = read_csv(JOBS_PATH, JOBS_HEADERS)
+    assignments = read_csv(ASSIGNMENTS_PATH, ASSIGNMENTS_HEADERS)
+    candidates = read_csv(CSV_PATH, CSV_HEADERS)
+    cands_map = {c["Submission Date"]: c for c in candidates}
+    job = next((j for j in jobs if j["Job ID"] == job_id), None)
+    if not job:
+        return jsonify({"error": "Not found"}), 404
+    pipeline = []
+    for a in assignments:
+        if a["Job ID"] == job_id:
+            c = cands_map.get(a["Candidate Date"], {})
+            pipeline.append({
+                "candidate_name": c.get("Full Name", a["Candidate Date"]),
+                "email": c.get("Email", ""),
+                "current_role": c.get("Current Job Title", ""),
+                "notice_period": c.get("Notice Period", ""),
+                "stage": a["Stage"],
+            })
+    return jsonify({**job, "pipeline": pipeline})
+
+
+@app.route("/api/pipeline")
+@api_key_required
+def api_pipeline():
+    assignments = read_csv(ASSIGNMENTS_PATH, ASSIGNMENTS_HEADERS)
+    candidates = read_csv(CSV_PATH, CSV_HEADERS)
+    jobs = read_csv(JOBS_PATH, JOBS_HEADERS)
+    cands_map = {c["Submission Date"]: c for c in candidates}
+    jobs_map = {j["Job ID"]: j for j in jobs}
+    by_stage = {}
+    for a in assignments:
+        stage = a["Stage"]
+        c = cands_map.get(a["Candidate Date"], {})
+        j = jobs_map.get(a["Job ID"], {})
+        by_stage.setdefault(stage, []).append({
+            "candidate_name": c.get("Full Name", ""),
+            "job_title": j.get("Job Title", ""),
+            "company": j.get("Company Name", ""),
+        })
+    return jsonify(by_stage)
+
+
 if __name__ == "__main__":
     ensure_csv()
     port = int(os.environ.get("PORT", 5050))
