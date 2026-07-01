@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ prospect['Company Name'] }} — Mason Dynamics BD</title>
+  <link rel="icon" type="image/png" href="/static/favicon.png" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <style>
+    body { background: #F0F4F9; }
+
+    .admin-header {
+      background: #fff; border-bottom: 3px solid #2255CC;
+      padding: 0 32px; margin-bottom: 28px;
+    }
+    .admin-header-inner { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; }
+    .admin-header img { height: 44px; }
+    .admin-header-right { display: flex; align-items: center; gap: 12px; }
+    .btn-nav {
+      background: none; border: 1.5px solid #D8E2EC; border-radius: 7px;
+      padding: 7px 14px; font-size: 12px; font-weight: 600; color: #5A6A7A;
+      cursor: pointer; text-decoration: none; transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-nav:hover { border-color: #2D2D2D; color: #2D2D2D; }
+
+    .admin-body { max-width: 1300px; margin: 0 auto; padding: 0 24px 60px; }
+    .page-layout { display: grid; grid-template-columns: 360px 1fr; gap: 24px; align-items: start; }
+
+    .card {
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      overflow: hidden; margin-bottom: 20px;
+    }
+    .card-header {
+      padding: 14px 20px; border-bottom: 1px solid #EEF2F6;
+      font-size: 13px; font-weight: 700; color: #2D2D2D;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-body { padding: 20px; }
+
+    .form-field { margin-bottom: 13px; }
+    .form-field label {
+      display: block; font-size: 11px; font-weight: 700;
+      color: #4A5A6A; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;
+    }
+    .form-field input, .form-field select, .form-field textarea {
+      width: 100%; padding: 9px 12px; border: 1.5px solid #D8E2EC; border-radius: 7px;
+      font-size: 13px; color: #1A2332; background: #fff;
+      box-sizing: border-box; font-family: inherit;
+    }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+      outline: none; border-color: #2255CC;
+    }
+    .form-field a { font-size: 12px; color: #2255CC; }
+
+    .btn-save {
+      width: 100%; padding: 10px; background: #2255CC; color: #fff;
+      border: none; border-radius: 8px; font-size: 13px; font-weight: 700;
+      cursor: pointer; margin-top: 4px;
+    }
+    .btn-save:hover { background: #1a44aa; }
+
+    .btn-convert {
+      width: 100%; padding: 10px; background: #10B981; color: #fff;
+      border: none; border-radius: 8px; font-size: 13px; font-weight: 700;
+      cursor: pointer; margin-top: 8px;
+    }
+    .btn-convert:hover { background: #059669; }
+
+    .btn-delete {
+      width: 100%; padding: 10px; background: none; color: #DC2626;
+      border: 1.5px solid #FECACA; border-radius: 8px;
+      font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 8px;
+    }
+    .btn-delete:hover { background: #FEF2F2; border-color: #DC2626; }
+
+    .stage-badge {
+      display: inline-block; padding: 4px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: 700; color: #fff;
+    }
+    .priority-badge {
+      display: inline-block; padding: 3px 10px; border-radius: 12px;
+      font-size: 11px; font-weight: 700;
+    }
+    .priority-High   { background: #FEE2E2; color: #B91C1C; }
+    .priority-Medium { background: #FEF9C3; color: #92400E; }
+    .priority-Low    { background: #F0FDF4; color: #166534; }
+
+    /* Contacts */
+    .contact-card {
+      border: 1px solid #EEF2F6; border-radius: 10px;
+      padding: 14px 16px; margin-bottom: 10px;
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
+    }
+    .contact-name { font-size: 14px; font-weight: 700; color: #2D2D2D; }
+    .contact-title { font-size: 12px; color: #7A8A9A; margin-top: 2px; }
+    .contact-detail { font-size: 12px; color: #5A6A7A; margin-top: 3px; }
+    .contact-detail a { color: #2255CC; text-decoration: none; }
+    .contact-detail a:hover { text-decoration: underline; }
+
+    .btn-remove {
+      background: none; border: 1.5px solid #FECACA; border-radius: 6px;
+      padding: 4px 10px; font-size: 11px; font-weight: 600; color: #DC2626;
+      cursor: pointer; white-space: nowrap; flex-shrink: 0;
+    }
+    .btn-remove:hover { background: #FEF2F2; }
+
+    .add-contact-form {
+      border: 1.5px dashed #D8E2EC; border-radius: 10px;
+      padding: 16px; margin-top: 12px;
+    }
+    .add-contact-form .form-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    }
+    .btn-add-sm {
+      margin-top: 10px; padding: 8px 18px;
+      background: #2255CC; color: #fff;
+      border: none; border-radius: 7px;
+      font-size: 12px; font-weight: 700; cursor: pointer;
+    }
+    .btn-add-sm:hover { background: #1a44aa; }
+
+    /* Notes */
+    .note-item {
+      border-left: 3px solid #2255CC; padding: 10px 14px;
+      background: #F8FAFF; border-radius: 0 8px 8px 0;
+      margin-bottom: 10px;
+    }
+    .note-date { font-size: 11px; color: #9AABB8; margin-bottom: 4px; }
+    .note-text { font-size: 13px; color: #2A3A4A; white-space: pre-wrap; line-height: 1.5; }
+
+    .note-input-area { display: flex; gap: 10px; margin-top: 12px; }
+    .note-input-area textarea {
+      flex: 1; padding: 10px 12px; border: 1.5px solid #D8E2EC; border-radius: 8px;
+      font-size: 13px; font-family: inherit; resize: vertical; min-height: 70px;
+    }
+    .note-input-area textarea:focus { outline: none; border-color: #2255CC; }
+    .btn-note {
+      padding: 10px 18px; background: #2255CC; color: #fff;
+      border: none; border-radius: 8px; font-size: 13px; font-weight: 700;
+      cursor: pointer; align-self: flex-end;
+    }
+    .btn-note:hover { background: #1a44aa; }
+
+    .detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 13px; }
+    .detail-label { color: #7A8A9A; font-size: 12px; }
+    .detail-value { color: #2D2D2D; font-weight: 600; text-align: right; max-width: 60%; word-break: break-word; }
+    .detail-value a { color: #2255CC; text-decoration: none; }
+    .detail-value a:hover { text-decoration: underline; }
+
+    .empty-msg { color: #9AABB8; font-size: 13px; text-align: center; padding: 20px 0; }
+  </style>
+</head>
+<body>
+
+<div class="admin-header">
+  <div class="admin-header-inner">
+    <div style="display:flex;align-items:center;gap:20px;">
+      <img src="/static/logo.png" alt="Mason Dynamics LTD" />
+      <span style="font-size:13px;font-weight:700;color:#2D2D2D;text-transform:uppercase;letter-spacing:0.8px;">BD</span>
+    </div>
+    <div class="admin-header-right">
+      <a href="/admin/home"      class="btn-nav" style="border-color:#2255CC;color:#2255CC;">&#127968; Home</a>
+      <a href="/admin/bd"        class="btn-nav">&#8592; BD</a>
+      <a href="/admin/dashboard" class="btn-nav">&#128101; Candidates</a>
+      <a href="/admin/jobs"      class="btn-nav">&#128188; Jobs</a>
+      <a href="/admin/clients"   class="btn-nav">&#127970; Clients</a>
+      <a href="/admin/logout"    class="btn-nav">Sign Out</a>
+    </div>
+  </div>
+</div>
+
+<div class="admin-body">
+
+  <!-- Page title strip -->
+  <div style="display:flex;align-items:center;gap:14px;margin-bottom:24px;">
+    <h1 style="font-size:22px;font-weight:800;color:#2D2D2D;margin:0;">{{ prospect['Company Name'] }}</h1>
+    {% set sc = bd_stage_colours.get(prospect.get('Stage','Cold Lead'),'#94A3B8') %}
+    <span class="stage-badge" style="background:{{ sc }};">{{ prospect.get('Stage','Cold Lead') }}</span>
+    <span class="priority-badge priority-{{ prospect.get('Priority','Medium') }}">{{ prospect.get('Priority','Medium') }} Priority</span>
+    {% if prospect.get('Industry') %}<span style="font-size:13px;color:#7A8A9A;">· {{ prospect['Industry'] }}</span>{% endif %}
+  </div>
+
+  <div class="page-layout">
+
+    <!-- LEFT COLUMN -->
+    <div>
+
+      <!-- Company Details -->
+      <div class="card">
+        <div class="card-header">Company Details</div>
+        <form method="POST" action="/admin/bd/{{ prospect['BD ID'] }}/update" class="card-body">
+          <div class="form-field">
+            <label>Company Name</label>
+            <input type="text" name="company_name" value="{{ prospect.get('Company Name','') }}" required />
+          </div>
+          <div class="form-field">
+            <label>Industry</label>
+            <input type="text" name="industry" value="{{ prospect.get('Industry','') }}" />
+          </div>
+          <div class="form-field">
+            <label>Location</label>
+            <input type="text" name="location" value="{{ prospect.get('Location','') }}" />
+          </div>
+          <div class="form-field">
+            <label>Address</label>
+            <input type="text" name="address" value="{{ prospect.get('Address','') }}" />
+          </div>
+          <div class="form-field">
+            <label>Website</label>
+            <input type="url" name="website" value="{{ prospect.get('Website','') }}" placeholder="https://..." />
+            {% if prospect.get('Website') %}
+            <a href="{{ prospect['Website'] }}" target="_blank">↗ Open</a>
+            {% endif %}
+          </div>
+          <div class="form-field">
+            <label>LinkedIn Page</label>
+            <input type="url" name="linkedin_page" value="{{ prospect.get('LinkedIn Page','') }}" placeholder="https://linkedin.com/company/..." />
+            {% if prospect.get('LinkedIn Page') %}
+            <a href="{{ prospect['LinkedIn Page'] }}" target="_blank">↗ Open</a>
+            {% endif %}
+          </div>
+          <div class="form-field">
+            <label>Job Page Link</label>
+            <input type="url" name="job_page_link" value="{{ prospect.get('Job Page Link','') }}" placeholder="https://..." />
+            {% if prospect.get('Job Page Link') %}
+            <a href="{{ prospect['Job Page Link'] }}" target="_blank">↗ Open</a>
+            {% endif %}
+          </div>
+
+          <!-- Stage & Priority -->
+          <div class="form-field">
+            <label>Stage</label>
+            <select name="stage">
+              {% for s in bd_stages %}
+              <option value="{{ s }}" {% if prospect.get('Stage') == s %}selected{% endif %}>{{ s }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Priority</label>
+            <select name="priority">
+              {% for p in ['High','Medium','Low'] %}
+              <option value="{{ p }}" {% if prospect.get('Priority') == p %}selected{% endif %}>{{ p }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Source</label>
+            <input type="text" name="source" value="{{ prospect.get('Source','') }}" placeholder="e.g. LinkedIn, Referral" />
+          </div>
+          <div class="form-field">
+            <label>Assigned To</label>
+            <input type="text" name="assigned_to" value="{{ prospect.get('Assigned To','') }}" />
+          </div>
+
+          <!-- Commercial -->
+          <div class="form-field">
+            <label>Agreed Fee %</label>
+            <input type="text" name="fee_percentage" value="{{ prospect.get('Fee Percentage','') }}" placeholder="e.g. 15" />
+          </div>
+          <div class="form-field">
+            <label>Terms Signed</label>
+            <select name="terms_signed">
+              <option value="" {% if not prospect.get('Terms Signed') %}selected{% endif %}>—</option>
+              <option value="Yes" {% if prospect.get('Terms Signed') == 'Yes' %}selected{% endif %}>Yes</option>
+              <option value="No"  {% if prospect.get('Terms Signed') == 'No' %}selected{% endif %}>No</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Last Contacted</label>
+            <input type="date" name="last_contacted" value="{{ prospect.get('Last Contacted','') }}" />
+          </div>
+          <div class="form-field">
+            <label>Next Follow Up</label>
+            <input type="date" name="next_follow_up" value="{{ prospect.get('Next Follow Up','') }}" />
+          </div>
+          <div class="form-field">
+            <label>Est. Hiring Volume</label>
+            <input type="text" name="hiring_volume" value="{{ prospect.get('Estimated Hiring Volume','') }}" placeholder="e.g. 5–10 hires/year" />
+          </div>
+          <div class="form-field">
+            <label>Internal Notes</label>
+            <textarea name="notes" rows="3" style="resize:vertical;">{{ prospect.get('Notes','') }}</textarea>
+          </div>
+
+          <button type="submit" class="btn-save">Save Changes</button>
+        </form>
+
+        <!-- Convert / Delete -->
+        <div style="padding: 0 20px 20px;">
+          <form method="POST" action="/admin/bd/{{ prospect['BD ID'] }}/convert"
+                onsubmit="return confirm('Convert {{ prospect[\'Company Name\'] }} to a Client? This will create a new client record.')">
+            <button type="submit" class="btn-convert">&#10003; Convert to Client</button>
+          </form>
+          <form method="POST" action="/admin/bd/{{ prospect['BD ID'] }}/delete"
+                onsubmit="return confirm('Delete {{ prospect[\'Company Name\'] }}? This cannot be undone.')">
+            <button type="submit" class="btn-delete">Delete Prospect</button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div>
+
+      <!-- Contacts -->
+      <div class="card">
+        <div class="card-header">
+          Contacts
+          <span style="font-size:12px;font-weight:600;color:#9AABB8;">{{ contacts | length }} contact{% if contacts | length != 1 %}s{% endif %}</span>
+        </div>
+        <div class="card-body">
+
+          {% if contacts %}
+            {% for c in contacts %}
+            <div class="contact-card">
+              <div>
+                <div class="contact-name">{{ c['Contact Name'] }}</div>
+                {% if c.get('Job Title') %}<div class="contact-title">{{ c['Job Title'] }}</div>{% endif %}
+                {% if c.get('Email') %}
+                <div class="contact-detail">✉ <a href="mailto:{{ c['Email'] }}">{{ c['Email'] }}</a></div>
+                {% endif %}
+                {% if c.get('Phone') %}
+                <div class="contact-detail">📞 {{ c['Phone'] }}</div>
+                {% endif %}
+              </div>
+              <form method="POST" action="/admin/bd/{{ prospect['BD ID'] }}/contact/delete/{{ c['Contact ID'] }}"
+                    onsubmit="return confirm('Remove {{ c[\'Contact Name\'] }}?')">
+                <button type="submit" class="btn-remove">Remove</button>
+              </form>
+            </div>
+            {% endfor %}
+          {% else %}
+          <p class="empty-msg">No contacts added yet.</p>
+          {% endif %}
+
+          <!-- Add contact form -->
+          <div class="add-contact-form">
+            <div style="font-size:12px;font-weight:700;color:#7A8A9A;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">Add Contact</div>
+            <form method="POST" action="/admin/bd/{{ prospect['BD ID'] }}/contact/add">
+              <div class="form-grid">
+                <div class="form-field" style="margin:0;">
+                  <label>Name *</label>
+                  <input type="text" name="contact_name" required />
+                </div>
+                <div class="form-field" style="margin:0;">
+                  <label>Job Title</label>
+                  <input type="text" name="job_title" />
+                </div>
+                <div class="form-field" style="margin:0;">
+                  <label>Email</label>
+                  <input type="email" name="email" />
+                </div>
+                <div class="form-field" style="margin:0;">
+                  <label>Phone</label>
+                  <input type="text" name="phone" />
+                </div>
+              </div>
+              <button type="submit" class="btn-add-sm">+ Add Contact</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes / Activity Log -->
+      <div class="card">
+        <div class="card-header">
+          Activity Log
+          <span style="font-size:12px;font-weight:600;color:#9AABB8;">{{ notes | length }} note{% if notes | length != 1 %}s{% endif %}</span>
+        </div>
+        <div class="card-body">
+
+          <!-- Add note -->
+          <form method="POST" action="/admin/bd/{{ prospect['BD ID'] }}/note/add">
+            <div class="note-input-area">
+              <textarea name="note_text" placeholder="Log a call, meeting, or update…" required></textarea>
+              <button type="submit" class="btn-note">Add Note</button>
+            </div>
+          </form>
+
+          <!-- Notes list -->
+          <div style="margin-top:16px;">
+            {% if notes %}
+              {% for n in notes %}
+              <div class="note-item">
+                <div class="note-date">{{ n['Note Date'] }}</div>
+                <div class="note-text">{{ n['Note Text'] }}</div>
+              </div>
+              {% endfor %}
+            {% else %}
+            <p class="empty-msg">No notes yet. Log your first touchpoint above.</p>
+            {% endif %}
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

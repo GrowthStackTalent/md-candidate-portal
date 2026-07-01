@@ -1176,6 +1176,263 @@ def admin_download_offer_letter(filename):
     return send_from_directory(OFFER_LETTERS_DIR, filename, as_attachment=True)
 
 
+# ── Business Development ───────────────────────────────────────────────────────
+
+BD_PATH          = DATA_DIR / "bd.csv"
+BD_CONTACTS_PATH = DATA_DIR / "bd_contacts.csv"
+BD_NOTES_PATH    = DATA_DIR / "bd_notes.csv"
+
+BD_HEADERS = [
+    "BD ID", "Date Added", "Company Name", "Location", "Address",
+    "LinkedIn Page", "Website", "Industry", "Job Page Link",
+    "Stage", "Priority", "Source", "Assigned To",
+    "Fee Percentage", "Terms Signed", "Last Contacted",
+    "Next Follow Up", "Estimated Hiring Volume", "Notes",
+]
+BD_CONTACTS_HEADERS = ["BD ID", "Contact ID", "Contact Name", "Email", "Phone", "Job Title"]
+BD_NOTES_HEADERS    = ["BD ID", "Note ID", "Note Date", "Note Text"]
+
+BD_STAGES = [
+    "Cold Lead", "Contacted", "In Conversation",
+    "Meeting Booked", "Meeting Had", "Terms Sent",
+    "Terms Signed", "Not Interested", "Dormant",
+]
+BD_STAGE_COLOURS = {
+    "Cold Lead":       "#94A3B8",
+    "Contacted":       "#60A5FA",
+    "In Conversation": "#3B82F6",
+    "Meeting Booked":  "#F59E0B",
+    "Meeting Had":     "#D97706",
+    "Terms Sent":      "#8B5CF6",
+    "Terms Signed":    "#10B981",
+    "Not Interested":  "#EF4444",
+    "Dormant":         "#9CA3AF",
+}
+
+def _ensure_bd():
+    for path, headers in [
+        (BD_PATH, BD_HEADERS),
+        (BD_CONTACTS_PATH, BD_CONTACTS_HEADERS),
+        (BD_NOTES_PATH, BD_NOTES_HEADERS),
+    ]:
+        if not path.exists():
+            with open(path, "w", newline="", encoding="utf-8") as f:
+                csv.writer(f).writerow(headers)
+
+def _read_bd() -> list[dict]:
+    _ensure_bd()
+    with open(BD_PATH, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+def _read_bd_contacts() -> list[dict]:
+    _ensure_bd()
+    with open(BD_CONTACTS_PATH, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+def _read_bd_notes() -> list[dict]:
+    _ensure_bd()
+    with open(BD_NOTES_PATH, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+def _write_bd(rows: list[dict]):
+    with open(BD_PATH, "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=BD_HEADERS, extrasaction="ignore")
+        w.writeheader(); w.writerows(rows)
+
+def _write_bd_contacts(rows: list[dict]):
+    with open(BD_CONTACTS_PATH, "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=BD_CONTACTS_HEADERS, extrasaction="ignore")
+        w.writeheader(); w.writerows(rows)
+
+def _write_bd_notes(rows: list[dict]):
+    with open(BD_NOTES_PATH, "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=BD_NOTES_HEADERS, extrasaction="ignore")
+        w.writeheader(); w.writerows(rows)
+
+
+@app.route("/admin/bd")
+@admin_required
+def admin_bd():
+    _ensure_bd()
+    prospects = _read_bd()
+    contacts  = _read_bd_contacts()
+    counts = {}
+    for c in contacts:
+        counts[c["BD ID"]] = counts.get(c["BD ID"], 0) + 1
+    return render_template("admin_bd.html",
+        prospects=prospects,
+        contact_counts=counts,
+        bd_stages=BD_STAGES,
+        bd_stage_colours=BD_STAGE_COLOURS,
+    )
+
+
+@app.route("/admin/bd/add", methods=["POST"])
+@admin_required
+def admin_bd_add():
+    _ensure_bd()
+    f = request.form
+    bd_id = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+    row = {h: "" for h in BD_HEADERS}
+    row.update({
+        "BD ID":         bd_id,
+        "Date Added":    datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "Company Name":  f.get("company_name", "").strip(),
+        "Location":      f.get("location", "").strip(),
+        "Address":       f.get("address", "").strip(),
+        "LinkedIn Page": f.get("linkedin_page", "").strip(),
+        "Website":       f.get("website", "").strip(),
+        "Industry":      f.get("industry", "").strip(),
+        "Job Page Link": f.get("job_page_link", "").strip(),
+        "Stage":         f.get("stage", "Cold Lead").strip(),
+        "Priority":      f.get("priority", "Medium").strip(),
+        "Source":        f.get("source", "").strip(),
+        "Assigned To":   f.get("assigned_to", "").strip(),
+    })
+    rows = _read_bd()
+    rows.append(row)
+    _write_bd(rows)
+    return redirect(url_for("admin_bd_detail", bd_id=bd_id))
+
+
+@app.route("/admin/bd/<bd_id>")
+@admin_required
+def admin_bd_detail(bd_id):
+    _ensure_bd()
+    prospects = _read_bd()
+    prospect  = next((p for p in prospects if p["BD ID"] == bd_id), None)
+    if not prospect:
+        return redirect(url_for("admin_bd"))
+    contacts  = [c for c in _read_bd_contacts() if c["BD ID"] == bd_id]
+    notes     = sorted(
+        [n for n in _read_bd_notes() if n["BD ID"] == bd_id],
+        key=lambda n: n["Note Date"], reverse=True
+    )
+    return render_template("admin_bd_detail.html",
+        prospect=prospect,
+        contacts=contacts,
+        notes=notes,
+        bd_stages=BD_STAGES,
+        bd_stage_colours=BD_STAGE_COLOURS,
+    )
+
+
+@app.route("/admin/bd/<bd_id>/update", methods=["POST"])
+@admin_required
+def admin_bd_update(bd_id):
+    _ensure_bd()
+    f = request.form
+    rows = _read_bd()
+    for row in rows:
+        if row["BD ID"] == bd_id:
+            row["Company Name"]          = f.get("company_name", row["Company Name"]).strip()
+            row["Location"]              = f.get("location", row["Location"]).strip()
+            row["Address"]               = f.get("address", row["Address"]).strip()
+            row["LinkedIn Page"]         = f.get("linkedin_page", row["LinkedIn Page"]).strip()
+            row["Website"]               = f.get("website", row["Website"]).strip()
+            row["Industry"]              = f.get("industry", row["Industry"]).strip()
+            row["Job Page Link"]         = f.get("job_page_link", row["Job Page Link"]).strip()
+            row["Stage"]                 = f.get("stage", row["Stage"]).strip()
+            row["Priority"]              = f.get("priority", row["Priority"]).strip()
+            row["Source"]                = f.get("source", row["Source"]).strip()
+            row["Assigned To"]           = f.get("assigned_to", row["Assigned To"]).strip()
+            row["Fee Percentage"]        = f.get("fee_percentage", row["Fee Percentage"]).strip()
+            row["Terms Signed"]          = f.get("terms_signed", row["Terms Signed"]).strip()
+            row["Last Contacted"]        = f.get("last_contacted", row["Last Contacted"]).strip()
+            row["Next Follow Up"]        = f.get("next_follow_up", row["Next Follow Up"]).strip()
+            row["Estimated Hiring Volume"] = f.get("hiring_volume", row["Estimated Hiring Volume"]).strip()
+            row["Notes"]                 = f.get("notes", row["Notes"]).strip()
+    _write_bd(rows)
+    return redirect(url_for("admin_bd_detail", bd_id=bd_id))
+
+
+@app.route("/admin/bd/<bd_id>/contact/add", methods=["POST"])
+@admin_required
+def admin_bd_contact_add(bd_id):
+    _ensure_bd()
+    f = request.form
+    contact_id = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+    contacts = _read_bd_contacts()
+    contacts.append({
+        "BD ID":        bd_id,
+        "Contact ID":   contact_id,
+        "Contact Name": f.get("contact_name", "").strip(),
+        "Email":        f.get("email", "").strip(),
+        "Phone":        f.get("phone", "").strip(),
+        "Job Title":    f.get("job_title", "").strip(),
+    })
+    _write_bd_contacts(contacts)
+    return redirect(url_for("admin_bd_detail", bd_id=bd_id))
+
+
+@app.route("/admin/bd/<bd_id>/contact/delete/<contact_id>", methods=["POST"])
+@admin_required
+def admin_bd_contact_delete(bd_id, contact_id):
+    _ensure_bd()
+    contacts = [c for c in _read_bd_contacts()
+                if not (c["BD ID"] == bd_id and c["Contact ID"] == contact_id)]
+    _write_bd_contacts(contacts)
+    return redirect(url_for("admin_bd_detail", bd_id=bd_id))
+
+
+@app.route("/admin/bd/<bd_id>/note/add", methods=["POST"])
+@admin_required
+def admin_bd_note_add(bd_id):
+    _ensure_bd()
+    text = request.form.get("note_text", "").strip()
+    if text:
+        note_id = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+        notes = _read_bd_notes()
+        notes.append({
+            "BD ID":     bd_id,
+            "Note ID":   note_id,
+            "Note Date": datetime.now().strftime("%Y-%m-%d %H:%M"),
+            "Note Text": text,
+        })
+        _write_bd_notes(notes)
+    return redirect(url_for("admin_bd_detail", bd_id=bd_id))
+
+
+@app.route("/admin/bd/<bd_id>/delete", methods=["POST"])
+@admin_required
+def admin_bd_delete(bd_id):
+    _ensure_bd()
+    _write_bd([p for p in _read_bd() if p["BD ID"] != bd_id])
+    _write_bd_contacts([c for c in _read_bd_contacts() if c["BD ID"] != bd_id])
+    _write_bd_notes([n for n in _read_bd_notes() if n["BD ID"] != bd_id])
+    return redirect(url_for("admin_bd"))
+
+
+@app.route("/admin/bd/<bd_id>/convert", methods=["POST"])
+@admin_required
+def admin_bd_convert(bd_id):
+    _ensure_bd()
+    prospects = _read_bd()
+    p = next((x for x in prospects if x["BD ID"] == bd_id), None)
+    if p:
+        contacts = [c for c in _read_bd_contacts() if c["BD ID"] == bd_id]
+        primary = contacts[0] if contacts else {}
+        client_id = datetime.now().strftime("%Y%m%d_%H%M%S")
+        ensure_clients_csv()
+        clients = read_all_clients()
+        clients.append({
+            "Client ID":      client_id,
+            "Date Added":     datetime.now().strftime("%Y-%m-%d %H:%M"),
+            "Client Name":    p["Company Name"],
+            "Contact Name":   primary.get("Contact Name", ""),
+            "Fee Percentage": p.get("Fee Percentage", ""),
+            "Terms Filename": "",
+        })
+        with open(CLIENTS_PATH, "w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=CLIENTS_HEADERS, extrasaction="ignore")
+            w.writeheader(); w.writerows(clients)
+        for row in prospects:
+            if row["BD ID"] == bd_id:
+                row["Stage"] = "Terms Signed"
+        _write_bd(prospects)
+    return redirect(url_for("admin_clients"))
+
+
 # ── Claude MCP API ─────────────────────────────────────────────────────────────
 
 def api_key_required(f):

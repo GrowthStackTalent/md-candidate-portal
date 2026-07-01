@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Business Development — Mason Dynamics LTD</title>
+  <link rel="icon" type="image/png" href="/static/favicon.png" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <style>
+    body { background: #F0F4F9; }
+
+    .admin-header {
+      background: #fff;
+      border-bottom: 3px solid #2255CC;
+      padding: 0 32px;
+      margin-bottom: 28px;
+    }
+    .admin-header-inner {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+    }
+    .admin-header img { height: 44px; }
+    .admin-header-right { display: flex; align-items: center; gap: 12px; }
+    .admin-title { font-size: 13px; font-weight: 700; color: #2D2D2D; text-transform: uppercase; letter-spacing: 0.8px; }
+    .btn-nav {
+      background: none; border: 1.5px solid #D8E2EC;
+      border-radius: 7px; padding: 7px 14px;
+      font-size: 12px; font-weight: 600; color: #5A6A7A;
+      cursor: pointer; text-decoration: none;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-nav:hover { border-color: #2D2D2D; color: #2D2D2D; }
+
+    .admin-body { max-width: 1400px; margin: 0 auto; padding: 0 24px 60px; }
+    .two-col-layout { display: grid; grid-template-columns: 340px 1fr; gap: 24px; align-items: start; }
+
+    .form-card {
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      overflow: hidden; position: sticky; top: 20px;
+    }
+    .form-card-header {
+      padding: 16px 24px; border-bottom: 1px solid #EEF2F6;
+      font-size: 14px; font-weight: 700; color: #2D2D2D;
+    }
+    .add-form { padding: 20px 24px; }
+    .form-field { margin-bottom: 13px; }
+    .form-field label {
+      display: block; font-size: 11px; font-weight: 700;
+      color: #4A5A6A; text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 5px;
+    }
+    .form-field input, .form-field select, .form-field textarea {
+      width: 100%; padding: 9px 12px;
+      border: 1.5px solid #D8E2EC; border-radius: 7px;
+      font-size: 13px; color: #1A2332; background: #fff;
+      box-sizing: border-box; font-family: inherit;
+    }
+    .form-field input:focus, .form-field select:focus { outline: none; border-color: #2255CC; }
+    .btn-add {
+      width: 100%; padding: 11px;
+      background: #2255CC; color: #fff;
+      border: none; border-radius: 8px;
+      font-size: 14px; font-weight: 700;
+      cursor: pointer; margin-top: 4px;
+    }
+    .btn-add:hover { background: #1a44aa; }
+
+    /* Stage filter pills */
+    .filter-bar {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-bottom: 16px; align-items: center;
+    }
+    .filter-pill {
+      padding: 5px 14px; border-radius: 20px;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      border: 1.5px solid #D8E2EC; background: #fff;
+      color: #5A6A7A; transition: all 0.15s;
+      text-decoration: none;
+    }
+    .filter-pill:hover, .filter-pill.active {
+      border-color: #2255CC; color: #2255CC; background: #EEF3FF;
+    }
+    .filter-label { font-size: 11px; font-weight: 700; color: #9AABB8; text-transform: uppercase; }
+
+    /* Prospect tiles */
+    .prospects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    .prospect-tile {
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      padding: 20px 22px;
+      display: flex; flex-direction: column; gap: 10px;
+      text-decoration: none; color: inherit;
+      border: 2px solid transparent;
+      transition: box-shadow 0.15s, border-color 0.15s, transform 0.12s;
+    }
+    .prospect-tile:hover {
+      box-shadow: 0 6px 20px rgba(34,85,204,0.12);
+      border-color: #2255CC; transform: translateY(-2px);
+    }
+    .tile-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .tile-name { font-size: 15px; font-weight: 800; color: #2D2D2D; line-height: 1.3; }
+    .tile-industry { font-size: 12px; color: #7A8A9A; margin-top: 2px; }
+    .tile-location { font-size: 11px; color: #9AABB8; margin-top: 1px; }
+
+    .stage-badge {
+      display: inline-block; padding: 3px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 700; white-space: nowrap; flex-shrink: 0;
+      color: #fff;
+    }
+    .priority-badge {
+      display: inline-block; padding: 2px 8px; border-radius: 12px;
+      font-size: 10px; font-weight: 700;
+    }
+    .priority-High   { background: #FEE2E2; color: #B91C1C; }
+    .priority-Medium { background: #FEF9C3; color: #92400E; }
+    .priority-Low    { background: #F0FDF4; color: #166534; }
+
+    .tile-meta {
+      display: flex; gap: 14px; flex-wrap: wrap;
+      font-size: 12px; color: #5A6A7A;
+      border-top: 1px solid #F0F4F8; padding-top: 10px;
+    }
+    .tile-meta-item { display: flex; align-items: center; gap: 4px; }
+
+    .empty-state {
+      text-align: center; padding: 64px 24px;
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07); color: #8A9AAA;
+    }
+  </style>
+</head>
+<body>
+
+<div class="admin-header">
+  <div class="admin-header-inner">
+    <div style="display:flex;align-items:center;gap:20px;">
+      <img src="/static/logo.png" alt="Mason Dynamics LTD" />
+      <span class="admin-title">Business Development</span>
+    </div>
+    <div class="admin-header-right">
+      <a href="/admin/home"      class="btn-nav" style="border-color:#2255CC;color:#2255CC;">&#127968; Home</a>
+      <a href="/admin/dashboard" class="btn-nav">&#128101; Candidates</a>
+      <a href="/admin/jobs"      class="btn-nav">&#128188; Jobs</a>
+      <a href="/admin/clients"   class="btn-nav">&#127970; Clients</a>
+      <a href="/admin/logout"    class="btn-nav">Sign Out</a>
+    </div>
+  </div>
+</div>
+
+<div class="admin-body">
+  <div class="two-col-layout">
+
+    <!-- Add Prospect form -->
+    <div class="form-card">
+      <div class="form-card-header">+ Add Prospect</div>
+      <form method="POST" action="/admin/bd/add" class="add-form">
+        <div class="form-field">
+          <label>Company Name *</label>
+          <input type="text" name="company_name" placeholder="e.g. Acme Corp" required />
+        </div>
+        <div class="form-field">
+          <label>Industry</label>
+          <input type="text" name="industry" placeholder="e.g. SaaS, Finance, Healthcare" />
+        </div>
+        <div class="form-field">
+          <label>Location</label>
+          <input type="text" name="location" placeholder="e.g. London, UK" />
+        </div>
+        <div class="form-field">
+          <label>Website</label>
+          <input type="url" name="website" placeholder="https://..." />
+        </div>
+        <div class="form-field">
+          <label>LinkedIn Page</label>
+          <input type="url" name="linkedin_page" placeholder="https://linkedin.com/company/..." />
+        </div>
+        <div class="form-field">
+          <label>Stage</label>
+          <select name="stage">
+            {% for s in bd_stages %}
+            <option value="{{ s }}" {% if s == 'Cold Lead' %}selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Priority</label>
+          <select name="priority">
+            <option value="High">High</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Source</label>
+          <input type="text" name="source" placeholder="e.g. LinkedIn Outreach, Referral" />
+        </div>
+        <div class="form-field">
+          <label>Assigned To</label>
+          <input type="text" name="assigned_to" placeholder="e.g. Joel Mason" />
+        </div>
+        <button type="submit" class="btn-add">+ Add Prospect</button>
+      </form>
+    </div>
+
+    <!-- Prospect tiles -->
+    <div>
+      <div class="filter-bar">
+        <span class="filter-label">Filter:</span>
+        <a href="/admin/bd" class="filter-pill {% if not request.args.get('stage') %}active{% endif %}">All ({{ prospects | length }})</a>
+        {% for s in bd_stages %}
+        {% set cnt = prospects | selectattr('Stage', 'equalto', s) | list | length %}
+        {% if cnt > 0 %}
+        <a href="/admin/bd?stage={{ s | urlencode }}"
+           class="filter-pill {% if request.args.get('stage') == s %}active{% endif %}">
+          {{ s }} ({{ cnt }})
+        </a>
+        {% endif %}
+        {% endfor %}
+      </div>
+
+      {% set filtered = prospects %}
+      {% if request.args.get('stage') %}
+        {% set filtered = prospects | selectattr('Stage', 'equalto', request.args.get('stage')) | list %}
+      {% endif %}
+
+      {% if filtered %}
+      <div class="prospects-grid">
+        {% for p in filtered | sort(attribute='Date Added', reverse=True) %}
+        {% set stage_colour = bd_stage_colours.get(p.get('Stage', 'Cold Lead'), '#94A3B8') %}
+        <a href="/admin/bd/{{ p['BD ID'] }}" class="prospect-tile">
+          <div class="tile-top">
+            <div>
+              <div class="tile-name">{{ p['Company Name'] }}</div>
+              {% if p.get('Industry') %}<div class="tile-industry">{{ p['Industry'] }}</div>{% endif %}
+              {% if p.get('Location') %}<div class="tile-location">📍 {{ p['Location'] }}</div>{% endif %}
+            </div>
+            <span class="stage-badge" style="background:{{ stage_colour }};">{{ p.get('Stage', 'Cold Lead') }}</span>
+          </div>
+
+          <div class="tile-meta">
+            <div class="tile-meta-item">
+              <span class="priority-badge priority-{{ p.get('Priority', 'Medium') }}">{{ p.get('Priority', 'Medium') }}</span>
+            </div>
+            {% if contact_counts.get(p['BD ID'], 0) > 0 %}
+            <div class="tile-meta-item">👤 {{ contact_counts[p['BD ID']] }} contact{% if contact_counts[p['BD ID']] != 1 %}s{% endif %}</div>
+            {% endif %}
+            {% if p.get('Assigned To') %}
+            <div class="tile-meta-item">🎯 {{ p['Assigned To'] }}</div>
+            {% endif %}
+            {% if p.get('Next Follow Up') %}
+            <div class="tile-meta-item">📅 {{ p['Next Follow Up'] }}</div>
+            {% endif %}
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-state">
+        <div style="font-size:36px;">📈</div>
+        <p style="margin-top:12px; font-weight:600; color:#5A6A7A;">No prospects yet</p>
+        <p style="font-size:13px;">Use the form to add your first BD prospect.</p>
+      </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
