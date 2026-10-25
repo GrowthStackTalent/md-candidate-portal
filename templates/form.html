@@ -134,10 +134,11 @@
           </div>
 
           <!-- Salary row -->
+          <p class="section-hint" style="margin-bottom:12px;">⚠️ Mandatory salary questions are prohibited in several US states and cities, including California, New York, Massachusetts, Illinois and Colorado. These fields are optional.</p>
           <div class="field-grid three-col salary-row">
             <div class="field">
-              <label for="currency">Currency <span class="req">*</span></label>
-              <select id="currency" name="currency" required>
+              <label for="currency">Currency</label>
+              <select id="currency" name="currency">
                 <option value="GBP">GBP — £ Pound</option>
                 <option value="USD" selected>USD — $ Dollar</option>
                 <option value="EUR">EUR — € Euro</option>
@@ -152,10 +153,10 @@
               </select>
             </div>
             <div class="field">
-              <label for="base_salary">Current Base Salary <span class="req">*</span></label>
+              <label for="base_salary">Current Base Salary</label>
               <div class="input-prefix-wrap">
                 <span class="currency-prefix" id="salaryPrefix">$</span>
-                <input type="number" id="base_salary" name="base_salary" placeholder="0" min="0" required />
+                <input type="number" id="base_salary" name="base_salary" placeholder="0" min="0" />
               </div>
             </div>
             <div class="field">
