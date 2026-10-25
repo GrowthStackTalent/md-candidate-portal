@@ -30,15 +30,15 @@
 
           <div class="field-grid two-col">
             <div class="field">
-              <label for="full_name">Full Name</label>
-              <input type="text" id="full_name" name="full_name" placeholder="e.g. Jane Smith" />
+              <label for="full_name">Full Name <span class="req">*</span></label>
+              <input type="text" id="full_name" name="full_name" placeholder="e.g. Jane Smith" required />
             </div>
             <div class="field">
-              <label for="email">Email Address</label>
-              <input type="email" id="email" name="email" placeholder="e.g. jane@example.com" />
+              <label for="email">Email Address <span class="req">*</span></label>
+              <input type="email" id="email" name="email" placeholder="e.g. jane@example.com" required />
             </div>
             <div class="field">
-              <label for="phone_number">Cell / Mobile Number</label>
+              <label for="phone_number">Cell / Mobile Number <span class="req">*</span></label>
               <div class="phone-wrap">
                 <select id="phone_code" name="phone_code" class="phone-code-select">
                   <option value="+1">🇺🇸 +1</option>
@@ -98,16 +98,16 @@
                   <option value="+852">🇭🇰 +852</option>
                   <option value="+886">🇹🇼 +886</option>
                 </select>
-                <input type="tel" id="phone_number" name="phone_number" placeholder="e.g. 7700 900000" />
+                <input type="tel" id="phone_number" name="phone_number" placeholder="e.g. 7700 900000" required />
               </div>
             </div>
             <div class="field">
-              <label for="location">Location (City, Country)</label>
-              <input type="text" id="location" name="location" placeholder="e.g. New York, USA" />
+              <label for="location">Location (City, Country) <span class="req">*</span></label>
+              <input type="text" id="location" name="location" placeholder="e.g. New York, USA" required />
             </div>
             <div class="field">
-              <label for="linkedin">LinkedIn Profile URL</label>
-              <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/…" />
+              <label for="linkedin">LinkedIn Profile URL <span class="req">*</span></label>
+              <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/…" required />
             </div>
           </div>
         </section>
@@ -120,12 +120,12 @@
 
           <div class="field-grid two-col">
             <div class="field">
-              <label for="job_title">Current Job Title</label>
-              <input type="text" id="job_title" name="job_title" placeholder="e.g. Senior Account Executive" />
+              <label for="job_title">Current Job Title <span class="req">*</span></label>
+              <input type="text" id="job_title" name="job_title" placeholder="e.g. Senior Account Executive" required />
             </div>
             <div class="field">
-              <label for="company">Current Company</label>
-              <input type="text" id="company" name="company" placeholder="e.g. Acme Corp" />
+              <label for="company">Current Company <span class="req">*</span></label>
+              <input type="text" id="company" name="company" placeholder="e.g. Acme Corp" required />
             </div>
           </div>
 
@@ -225,10 +225,10 @@
 
           <div class="field-grid two-col">
             <div class="field">
-              <label>Open to Relocating?</label>
+              <label>Open to Relocating? <span class="req">*</span></label>
               <div class="radio-group">
                 <label class="radio-item">
-                  <input type="radio" name="relocate" value="Yes" />
+                  <input type="radio" name="relocate" value="Yes" required />
                   <span class="radio-dot"></span>
                   <span>Yes</span>
                 </label>
@@ -245,8 +245,8 @@
               </div>
             </div>
             <div class="field">
-              <label for="notice_period">Notice Period</label>
-              <select id="notice_period" name="notice_period">
+              <label for="notice_period">Notice Period <span class="req">*</span></label>
+              <select id="notice_period" name="notice_period" required>
                 <option value="">— Select —</option>
                 <option value="Immediate">Immediate</option>
                 <option value="1 Week">1 Week</option>
@@ -267,7 +267,7 @@
           <h2 class="section-title">
             <span class="section-num">05</span> Languages
           </h2>
-          <p class="section-hint">Add all languages you speak</p>
+          <p class="section-hint">Add all languages you speak <span class="req">*</span> At least one required</p>
 
           <div id="languageList"></div>
 
@@ -290,7 +290,7 @@
           <h2 class="section-title">
             <span class="section-num">07</span> CV / Resume
           </h2>
-          <p class="section-hint">MS Word (.doc / .docx) preferred — PDF also accepted. Max 10 MB</p>
+          <p class="section-hint">MS Word (.doc / .docx) preferred — PDF also accepted. Max 10 MB <span class="req">*</span> Required</p>
 
           <div class="upload-zone" id="uploadZone">
             <input type="file" id="cv_file" name="cv_file"
@@ -343,7 +343,7 @@
             </div>
 
             <label class="consent-check-item">
-              <input type="checkbox" id="dataConsent" name="data_consent" value="yes" />
+              <input type="checkbox" id="dataConsent" name="data_consent" value="yes" required />
               <span class="consent-check-box"></span>
               <span class="consent-check-label">
                 I confirm that I have read and understood the above statement, and I give my
@@ -500,7 +500,23 @@
     document.getElementById("candidateForm").addEventListener("submit", async function (e) {
       e.preventDefault();
 
-      // Basic HTML5 validation
+      // Validate: at least one language selected
+      const langSelects = document.querySelectorAll("#languageList .lang-name");
+      const hasLang = Array.from(langSelects).some(s => s.value !== "");
+      if (!hasLang) {
+        alert("Please add at least one language.");
+        document.getElementById("addLang").scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+
+      // Validate: CV must be uploaded
+      if (!document.getElementById("cv_file").files.length) {
+        alert("Please upload your CV / resume.");
+        document.getElementById("uploadZone").scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+
+      // HTML5 required field validation
       if (!this.checkValidity()) {
         this.reportValidity();
         return;
