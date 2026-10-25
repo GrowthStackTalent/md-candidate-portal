@@ -129,102 +129,19 @@
             </div>
           </div>
 
-          <!-- Salary row -->
-          <p class="section-hint" style="margin-top:12px; margin-bottom:20px; padding:10px 14px; background:#fff8e6; border-left:3px solid #f0a500; border-radius:4px; line-height:1.5;">⚠️ Mandatory salary questions are prohibited in several US states and cities, including California, New York, Massachusetts, Illinois and Colorado. These fields are optional.</p>
-          <div class="field-grid three-col salary-row">
-            <div class="field">
-              <label for="currency">Currency</label>
-              <select id="currency" name="currency">
-                <option value="GBP">GBP — £ Pound</option>
-                <option value="USD" selected>USD — $ Dollar</option>
-                <option value="EUR">EUR — € Euro</option>
-                <option value="CAD">CAD — CA$ Dollar</option>
-                <option value="AUD">AUD — A$ Dollar</option>
-                <option value="CHF">CHF — Swiss Franc</option>
-                <option value="JPY">JPY — ¥ Yen</option>
-                <option value="SGD">SGD — S$ Dollar</option>
-                <option value="HKD">HKD — HK$ Dollar</option>
-                <option value="AED">AED — Dirham</option>
-                <option value="INR">INR — ₹ Rupee</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="base_salary">Current Base Salary</label>
-              <div class="input-prefix-wrap">
-                <span class="currency-prefix" id="salaryPrefix">$</span>
-                <input type="number" id="base_salary" name="base_salary" placeholder="0" min="0" />
-              </div>
-            </div>
-            <div class="field">
-              <label for="ote">Current On Target Earnings (OTE)</label>
-              <div class="input-prefix-wrap">
-                <span class="currency-prefix" id="otePrefix">$</span>
-                <input type="number" id="ote" name="ote" placeholder="0" min="0" />
-              </div>
-            </div>
-          </div>
         </section>
 
-        <!-- ── Benefits ──────────────────────────────────── -->
+        <!-- ── Salary Expectations & Desired Benefits ───── -->
         <section class="card">
           <h2 class="section-title">
-            <span class="section-num">03</span> Current Benefits Package
-          </h2>
-          <p class="section-hint">Select all that apply</p>
-
-          <div class="checkbox-grid">
-            <label class="check-item">
-              <input type="checkbox" name="benefits" value="Company Car or Allowance" />
-              <span class="check-box"></span>
-              <span>Company Car / Allowance</span>
-            </label>
-            <label class="check-item">
-              <input type="checkbox" name="benefits" value="401k / Pension" />
-              <span class="check-box"></span>
-              <span>401k / Pension</span>
-            </label>
-            <label class="check-item">
-              <input type="checkbox" name="benefits" value="Health Care" />
-              <span class="check-box"></span>
-              <span>Health Care</span>
-            </label>
-            <label class="check-item">
-              <input type="checkbox" name="benefits" value="Gym Membership" />
-              <span class="check-box"></span>
-              <span>Gym Membership</span>
-            </label>
-            <label class="check-item">
-              <input type="checkbox" name="benefits" value="PTO" />
-              <span class="check-box"></span>
-              <span>PTO / Annual Leave</span>
-            </label>
-            <label class="check-item">
-              <input type="checkbox" name="benefits" value="Food Vouchers" />
-              <span class="check-box"></span>
-              <span>Food Vouchers</span>
-            </label>
-            <label class="check-item" id="otherCheckWrap">
-              <input type="checkbox" name="benefits" value="Other" id="otherCheck" />
-              <span class="check-box"></span>
-              <span>Other</span>
-            </label>
-          </div>
-          <div class="field" id="otherBenefitField" style="display:none; margin-top:12px;">
-            <label for="benefits_other">Please specify other benefit(s)</label>
-            <input type="text" id="benefits_other" name="benefits_other" placeholder="Describe additional benefit(s)" />
-          </div>
-        </section>
-
-        <!-- ── Salary Expectations ───────────────────────── -->
-        <section class="card">
-          <h2 class="section-title">
-            <span class="section-num">04</span> Salary Expectations
+            <span class="section-num">03</span> Salary Expectations &amp; Desired Benefits
           </h2>
           <p class="section-hint">Optional — share what you are looking for in your next role</p>
+          <p class="section-hint" style="margin-top:8px; margin-bottom:20px; padding:10px 14px; background:#fff8e6; border-left:3px solid #f0a500; border-radius:4px; line-height:1.5;">⚠️ Mandatory salary questions are prohibited in several US states and cities, including California, New York, Massachusetts, Illinois and Colorado. These fields are optional.</p>
 
           <div class="field-grid three-col salary-row">
             <div class="field">
-              <label>Expected Currency</label>
+              <label>Currency</label>
               <select name="expected_currency">
                 <option value="GBP">GBP — £ Pound</option>
                 <option value="USD" selected>USD — $ Dollar</option>
@@ -256,17 +173,55 @@
             </div>
           </div>
 
-          <div class="field" style="margin-top:16px;">
-            <label for="ideal_benefits">Ideal Benefits Package</label>
-            <textarea id="ideal_benefits" name="ideal_benefits" rows="3"
-              placeholder="e.g. Private healthcare, pension contributions, flexible working, car allowance…"></textarea>
+          <p class="section-hint" style="margin-top:24px; margin-bottom:12px; font-weight:600; color:#1B3A5C;">Desired Benefits</p>
+          <p class="section-hint" style="margin-top:-8px; margin-bottom:16px;">Select all that you would like in your next role</p>
+          <div class="checkbox-grid">
+            <label class="check-item">
+              <input type="checkbox" name="desired_benefits" value="Company Car or Allowance" />
+              <span class="check-box"></span>
+              <span>Company Car / Allowance</span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" name="desired_benefits" value="401k / Pension" />
+              <span class="check-box"></span>
+              <span>401k / Pension</span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" name="desired_benefits" value="Health Care" />
+              <span class="check-box"></span>
+              <span>Health Care</span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" name="desired_benefits" value="Gym Membership" />
+              <span class="check-box"></span>
+              <span>Gym Membership</span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" name="desired_benefits" value="PTO" />
+              <span class="check-box"></span>
+              <span>PTO / Annual Leave</span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" name="desired_benefits" value="Food Vouchers" />
+              <span class="check-box"></span>
+              <span>Food Vouchers</span>
+            </label>
+            <label class="check-item" id="otherCheckWrap">
+              <input type="checkbox" name="desired_benefits" value="Other" id="otherCheck" />
+              <span class="check-box"></span>
+              <span>Other</span>
+            </label>
+          </div>
+          <div class="field" id="otherBenefitField" style="display:none; margin-top:12px;">
+            <label for="benefits_other">Please specify other benefit(s)</label>
+            <input type="text" id="benefits_other" name="benefits_other" placeholder="Describe additional benefit(s)" />
           </div>
         </section>
 
         <!-- ── Mobility ──────────────────────────────────── -->
         <section class="card">
           <h2 class="section-title">
-            <span class="section-num">05</span> Mobility & Location
+            <span class="section-num">04</span> Mobility & Location
           </h2>
 
           <div class="field-grid two-col">
@@ -311,7 +266,7 @@
         <!-- ── Languages ─────────────────────────────────── -->
         <section class="card">
           <h2 class="section-title">
-            <span class="section-num">06</span> Languages
+            <span class="section-num">05</span> Languages
           </h2>
           <p class="section-hint">Add all languages you speak</p>
 
@@ -323,7 +278,7 @@
         <!-- ── Education ────────────────────────────────── -->
         <section class="card">
           <h2 class="section-title">
-            <span class="section-num">07</span> Education
+            <span class="section-num">06</span> Education
           </h2>
           <p class="section-hint">Add your qualifications, most recent first</p>
 
@@ -334,7 +289,7 @@
         <!-- ── CV / Resume ──────────────────────────────── -->
         <section class="card">
           <h2 class="section-title">
-            <span class="section-num">08</span> CV / Resume
+            <span class="section-num">07</span> CV / Resume
           </h2>
           <p class="section-hint">MS Word (.doc / .docx) preferred — PDF also accepted. Max 10 MB</p>
 
@@ -358,7 +313,7 @@
         <!-- ── Data Consent ─────────────────────────────── -->
         <section class="card consent-card">
           <h2 class="section-title">
-            <span class="section-num">09</span> Data Protection &amp; Consent
+            <span class="section-num">08</span> Data Protection &amp; Consent
           </h2>
 
           <div class="consent-body">
@@ -426,17 +381,6 @@
   </div><!-- /page-wrap -->
 
   <script>
-    // ── Currency prefix sync ─────────────────────────────
-    const SYMBOLS = {
-      GBP:"£", USD:"$", EUR:"€", CAD:"CA$", AUD:"A$",
-      CHF:"CHF", JPY:"¥", SGD:"S$", HKD:"HK$", AED:"AED", INR:"₹"
-    };
-    document.getElementById("currency").addEventListener("change", function () {
-      const sym = SYMBOLS[this.value] || this.value;
-      document.getElementById("salaryPrefix").textContent = sym;
-      document.getElementById("otePrefix").textContent = sym;
-    });
-
     // ── Other benefit toggle ─────────────────────────────
     document.getElementById("otherCheck").addEventListener("change", function () {
       document.getElementById("otherBenefitField").style.display = this.checked ? "block" : "none";
@@ -663,8 +607,6 @@
       document.getElementById("educationList").innerHTML = "";
       eduCount = 0;
       addEducation();
-      document.getElementById("salaryPrefix").textContent = "$";
-      document.getElementById("otePrefix").textContent = "$";
       document.getElementById("otherBenefitField").style.display = "none";
       clearFile();
     }

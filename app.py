@@ -60,11 +60,10 @@ ALLOWED_CV_EXTENSIONS = {".pdf", ".doc", ".docx"}
 
 CSV_HEADERS = [
     "Submission Date", "Full Name", "Email", "Phone", "Location", "LinkedIn URL",
-    "Current Job Title", "Current Company", "Currency",
-    "Current Base Salary", "On Target Earnings",
-    "Benefits", "Open to Relocate", "Nearest Airport",
-    "Languages", "Education", "Notice Period",
-    "Expected Salary Min", "Expected Salary Max", "Expected OTE", "Ideal Benefits",
+    "Current Job Title", "Current Company",
+    "Open to Relocate", "Languages", "Education", "Notice Period",
+    "Expected Currency", "Expected Salary Min", "Expected Salary Max", "Expected OTE",
+    "Desired Benefits",
     "CV / Resume", "CV Filename",
     "Word Doc", "Data Consent Given", "Job Applied For",
 ]
@@ -228,9 +227,9 @@ def send_notification_email(data: dict):
             f"LinkedIn:       {data['LinkedIn URL']}",
             f"Job Title:      {data['Current Job Title']}",
             f"Company:        {data['Current Company']}",
-            f"Base Salary:    {data['Current Base Salary']}",
-            f"OTE:            {data['On Target Earnings']}",
-            f"Benefits:       {data['Benefits']}",
+            f"Expected Salary: {data['Expected Salary Min']} – {data['Expected Salary Max']}",
+            f"Expected OTE:   {data['Expected OTE']}",
+            f"Desired Benefits: {data['Desired Benefits']}",
             f"Notice Period:  {data['Notice Period']}",
             f"Relocate:       {data['Open to Relocate']}",
             f"Languages:      {data['Languages']}",
@@ -360,14 +359,14 @@ def generate_word_doc(data: dict, cv_path: Path | None = None) -> str:
         ("LinkedIn",            data["LinkedIn URL"]),
         ("Current Job Title",   data["Current Job Title"]),
         ("Current Company",     data["Current Company"]),
-        ("Current Base Salary",         data["Current Base Salary"]),
-        ("Current On Target Earnings",  data["On Target Earnings"]),
-        ("Current Benefits",            data["Benefits"]),
         ("Open to Relocate",    data["Open to Relocate"]),
-        ("Nearest Airport",     data["Nearest Airport"]),
         ("Languages",           data["Languages"]),
         ("Education",           data["Education"]),
         ("Notice Period",       data["Notice Period"]),
+        ("Expected Salary Min", data["Expected Salary Min"]),
+        ("Expected Salary Max", data["Expected Salary Max"]),
+        ("Expected OTE",        data["Expected OTE"]),
+        ("Desired Benefits",    data["Desired Benefits"]),
     ]
 
     tbl = doc.add_table(rows=len(fields), cols=2)
@@ -458,12 +457,12 @@ def index():
 def submit():
     f = request.form
 
-    benefits_selected = f.getlist("benefits")
+    benefits_selected = f.getlist("desired_benefits")
     other_benefit = f.get("benefits_other", "").strip()
     if other_benefit and "Other" in benefits_selected:
         benefits_selected = [b for b in benefits_selected if b != "Other"]
         benefits_selected.append(f"Other: {other_benefit}")
-    benefits_str = ", ".join(benefits_selected) if benefits_selected else "None"
+    benefits_str = ", ".join(benefits_selected) if benefits_selected else "—"
 
     lang_names = f.getlist("lang_name")
     lang_levels = f.getlist("lang_level")
@@ -483,8 +482,8 @@ def submit():
             edu_entries.append(" | ".join(p for p in parts if p))
     education_str = "; ".join(edu_entries) if edu_entries else "—"
 
-    currency = f.get("currency", "GBP")
-    symbol = CURRENCY_SYMBOLS.get(currency, "")
+    expected_currency = f.get("expected_currency", "GBP")
+    symbol = CURRENCY_SYMBOLS.get(expected_currency, "")
 
     def fmt_salary(val):
         try:
@@ -511,19 +510,15 @@ def submit():
         "LinkedIn URL":       f.get("linkedin", "").strip(),
         "Current Job Title":  f.get("job_title", "").strip(),
         "Current Company":    f.get("company", "").strip(),
-        "Currency":           currency,
-        "Current Base Salary": fmt_salary(f.get("base_salary")),
-        "On Target Earnings":  fmt_salary(f.get("ote")),
-        "Benefits":           benefits_str,
         "Open to Relocate":   f.get("relocate", "No"),
-        "Nearest Airport":    f.get("airport", "").strip(),
         "Languages":          languages_str,
         "Education":          education_str,
         "Notice Period":      f.get("notice_period", "").strip(),
+        "Expected Currency":  expected_currency,
         "Expected Salary Min": fmt_salary(f.get("expected_salary_min")),
         "Expected Salary Max": fmt_salary(f.get("expected_salary_max")),
         "Expected OTE":        fmt_salary(f.get("expected_ote")),
-        "Ideal Benefits":      f.get("ideal_benefits", "").strip(),
+        "Desired Benefits":    benefits_str,
         "CV / Resume":        "",
         "CV Filename":        "",
         "Word Doc":           "",
@@ -1028,10 +1023,10 @@ def admin_candidate_update(candidate_date):
     candidate_date = unquote(candidate_date)
     editable_fields = [
         "Full Name", "Email", "Phone", "Location", "LinkedIn URL",
-        "Nearest Airport", "Current Job Title", "Current Company",
-        "Currency", "Current Base Salary", "On Target Earnings",
-        "Benefits", "Notice Period", "Open to Relocate",
-        "Languages", "Education", "Data Consent Given",
+        "Current Job Title", "Current Company",
+        "Notice Period", "Open to Relocate",
+        "Expected Currency", "Expected Salary Min", "Expected Salary Max", "Expected OTE",
+        "Desired Benefits", "Languages", "Education", "Data Consent Given",
     ]
     candidates = read_all_candidates()
     for row in candidates:
