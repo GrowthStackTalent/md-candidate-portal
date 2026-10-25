@@ -466,7 +466,7 @@
       "Telugu","Thai","Turkish","Turkmen","Ukrainian","Urdu","Uyghur",
       "Uzbek","Vietnamese","Welsh","Xhosa","Yiddish","Yoruba","Zulu"
     ];
-    const LEVELS = ["Basic","Conversational","Professional","Fluent","Native"];
+    const LEVELS = ["Basic","Conversational","Professional","Fluent"];
 
     function buildLangOptions() {
       return LANGUAGES.map(l => `<option value="${l}">${l}</option>`).join("");
@@ -555,7 +555,7 @@
     addEducation();
 
     // Add default English row
-    addLanguage("English", "Native");
+    addLanguage("English", "Fluent");
 
     // ── Form submission ──────────────────────────────────
     document.getElementById("candidateForm").addEventListener("submit", async function (e) {
@@ -564,13 +564,6 @@
       // Basic HTML5 validation
       if (!this.checkValidity()) {
         this.reportValidity();
-        return;
-      }
-
-      // Require at least one language
-      const langNames = [...document.querySelectorAll(".lang-name")].map(s => s.value).filter(Boolean);
-      if (langNames.length === 0) {
-        alert("Please add at least one language.");
         return;
       }
 
@@ -670,7 +663,7 @@
       document.getElementById("candidateForm").reset();
       document.getElementById("languageList").innerHTML = "";
       langCount = 0;
-      addLanguage("English", "Native");
+      addLanguage("English", "Fluent");
       document.getElementById("educationList").innerHTML = "";
       eduCount = 0;
       addEducation();
