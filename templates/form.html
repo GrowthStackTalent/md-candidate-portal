@@ -169,58 +169,10 @@
           </div>
         </section>
 
-        <!-- ── Salary Expectations ───────────────────────── -->
-        <section class="card">
-          <h2 class="section-title">
-            <span class="section-num">03</span> Salary Expectations
-          </h2>
-          <p class="section-hint">Optional — share what you are looking for in your next role</p>
-
-          <div class="field-grid three-col salary-row">
-            <div class="field">
-              <label>Expected Currency</label>
-              <select name="expected_currency">
-                <option value="GBP">GBP — £ Pound</option>
-                <option value="USD" selected>USD — $ Dollar</option>
-                <option value="EUR">EUR — € Euro</option>
-                <option value="CAD">CAD — CA$ Dollar</option>
-                <option value="AUD">AUD — A$ Dollar</option>
-                <option value="CHF">CHF — Swiss Franc</option>
-                <option value="JPY">JPY — ¥ Yen</option>
-                <option value="SGD">SGD — S$ Dollar</option>
-                <option value="HKD">HKD — HK$ Dollar</option>
-                <option value="AED">AED — Dirham</option>
-                <option value="INR">INR — ₹ Rupee</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="expected_salary_min">Base Salary Range (Min)</label>
-              <input type="number" id="expected_salary_min" name="expected_salary_min" placeholder="0" min="0" />
-            </div>
-            <div class="field">
-              <label for="expected_salary_max">Base Salary Range (Max)</label>
-              <input type="number" id="expected_salary_max" name="expected_salary_max" placeholder="0" min="0" />
-            </div>
-          </div>
-
-          <div class="field-grid two-col" style="margin-top:16px;">
-            <div class="field">
-              <label for="expected_ote">Expected OTE</label>
-              <input type="number" id="expected_ote" name="expected_ote" placeholder="0" min="0" />
-            </div>
-          </div>
-
-          <div class="field" style="margin-top:16px;">
-            <label for="ideal_benefits">Ideal Benefits Package</label>
-            <textarea id="ideal_benefits" name="ideal_benefits" rows="3"
-              placeholder="e.g. Private healthcare, pension contributions, flexible working, car allowance…"></textarea>
-          </div>
-        </section>
-
         <!-- ── Benefits ──────────────────────────────────── -->
         <section class="card">
           <h2 class="section-title">
-            <span class="section-num">04</span> Current Benefits Package
+            <span class="section-num">03</span> Current Benefits Package
           </h2>
           <p class="section-hint">Select all that apply</p>
 
@@ -264,6 +216,54 @@
           <div class="field" id="otherBenefitField" style="display:none; margin-top:12px;">
             <label for="benefits_other">Please specify other benefit(s)</label>
             <input type="text" id="benefits_other" name="benefits_other" placeholder="Describe additional benefit(s)" />
+          </div>
+        </section>
+
+        <!-- ── Salary Expectations ───────────────────────── -->
+        <section class="card">
+          <h2 class="section-title">
+            <span class="section-num">04</span> Salary Expectations
+          </h2>
+          <p class="section-hint">Optional — share what you are looking for in your next role</p>
+
+          <div class="field-grid three-col salary-row">
+            <div class="field">
+              <label>Expected Currency</label>
+              <select name="expected_currency">
+                <option value="GBP">GBP — £ Pound</option>
+                <option value="USD" selected>USD — $ Dollar</option>
+                <option value="EUR">EUR — € Euro</option>
+                <option value="CAD">CAD — CA$ Dollar</option>
+                <option value="AUD">AUD — A$ Dollar</option>
+                <option value="CHF">CHF — Swiss Franc</option>
+                <option value="JPY">JPY — ¥ Yen</option>
+                <option value="SGD">SGD — S$ Dollar</option>
+                <option value="HKD">HKD — HK$ Dollar</option>
+                <option value="AED">AED — Dirham</option>
+                <option value="INR">INR — ₹ Rupee</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="expected_salary_min">Base Salary Range (Min)</label>
+              <input type="number" id="expected_salary_min" name="expected_salary_min" placeholder="0" min="0" />
+            </div>
+            <div class="field">
+              <label for="expected_salary_max">Base Salary Range (Max)</label>
+              <input type="number" id="expected_salary_max" name="expected_salary_max" placeholder="0" min="0" />
+            </div>
+          </div>
+
+          <div class="field-grid two-col" style="margin-top:16px;">
+            <div class="field">
+              <label for="expected_ote">Expected OTE</label>
+              <input type="number" id="expected_ote" name="expected_ote" placeholder="0" min="0" />
+            </div>
+          </div>
+
+          <div class="field" style="margin-top:16px;">
+            <label for="ideal_benefits">Ideal Benefits Package</label>
+            <textarea id="ideal_benefits" name="ideal_benefits" rows="3"
+              placeholder="e.g. Private healthcare, pension contributions, flexible working, car allowance…"></textarea>
           </div>
         </section>
 
