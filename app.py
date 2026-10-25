@@ -63,7 +63,9 @@ CSV_HEADERS = [
     "Current Job Title", "Current Company", "Currency",
     "Current Base Salary", "On Target Earnings",
     "Benefits", "Open to Relocate", "Nearest Airport",
-    "Languages", "Education", "Notice Period", "CV / Resume", "CV Filename",
+    "Languages", "Education", "Notice Period",
+    "Expected Salary Min", "Expected Salary Max", "Expected OTE", "Ideal Benefits",
+    "CV / Resume", "CV Filename",
     "Word Doc", "Data Consent Given", "Job Applied For",
 ]
 
@@ -518,6 +520,10 @@ def submit():
         "Languages":          languages_str,
         "Education":          education_str,
         "Notice Period":      f.get("notice_period", "").strip(),
+        "Expected Salary Min": fmt_salary(f.get("expected_salary_min")),
+        "Expected Salary Max": fmt_salary(f.get("expected_salary_max")),
+        "Expected OTE":        fmt_salary(f.get("expected_ote")),
+        "Ideal Benefits":      f.get("ideal_benefits", "").strip(),
         "CV / Resume":        "",
         "CV Filename":        "",
         "Word Doc":           "",
