@@ -496,6 +496,9 @@ select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 }
 .consent-check-label {
   font-size: 13px;
+  font-weight: 400;
   color: #2A3A4A;
   line-height: 1.6;
+  text-transform: none;
+  letter-spacing: 0;
 }
